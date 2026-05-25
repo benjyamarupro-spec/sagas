@@ -46,7 +46,7 @@ const CITIES = [
 ];
 
 // --- DEAL CARD ---
-function DealCard({ type, from, to, airline, dates, duration, price, label, urgency, timerVal, ctaText, borderColor }: any) {
+function DealCard({ type, from, to, airline, dates, duration, price, label, urgency, timerVal, ctaText, borderColor, depart, arrive }: any) {
   const [time, setTime] = useState(timerVal || 0);
   useEffect(() => {
     if (!timerVal) return;
@@ -75,6 +75,18 @@ function DealCard({ type, from, to, airline, dates, duration, price, label, urge
           <span style={{ fontFamily: 'Syne', fontWeight: 800, fontSize: 20, color: 'var(--nightsurf)' }}>{from}</span>
           <PlaneLanding size={16} color="var(--lagoon-muted)" />
           <span style={{ fontFamily: 'Syne', fontWeight: 800, fontSize: 20, color: 'var(--lagoon)' }}>{to}</span>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+          <span style={{ fontFamily: 'Syne', fontWeight: 800, fontSize: 18, color: 'var(--nightsurf)' }}>
+            {depart}
+          </span>
+          <span style={{ fontFamily: 'Syne', fontSize: 12, color: 'var(--lagoon-muted)' }}>→</span>
+          <span style={{ fontFamily: 'Syne', fontWeight: 800, fontSize: 18, color: 'var(--nightsurf)' }}>
+            {arrive}
+          </span>
+          <span style={{ fontFamily: 'Syne', fontSize: 11, color: 'var(--lagoon-muted)', marginLeft: 4 }}>
+            · {duration}
+          </span>
         </div>
         <p style={{ fontFamily: 'Syne', fontWeight: 600, fontSize: 13, color: 'var(--nightsurf)', marginBottom: 2 }}>✈ {airline}</p>
         <p style={{ fontFamily: 'Syne', fontWeight: 400, fontSize: 12, color: 'var(--lagoon-muted)', marginBottom: 16 }}>{dates} · {duration}</p>
@@ -318,9 +330,9 @@ export default function HomePage() {
               <Link href="/deals" style={{ fontFamily: 'Syne', fontWeight: 600, fontSize: 13, color: 'var(--lagoon)', textDecoration: 'none' }}>See all deals →</Link>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16 }}>
-              <DealCard type="hot" from="CEB" to="IAO" airline="Sunlight Air" dates="Jun 12–19" duration="direct · 55 min" price="₱1,850" label="🔥 Deal on fire · 3 seats left" timerVal={63728} ctaText="Book before it's gone" borderColor="var(--coral)" />
-              <DealCard type="top" from="CRK" to="IAO" airline="Sunlight Air" dates="Jul 5–12" duration="direct · 2h 30min" price="₱4,300" label="🕐 Price drops in" timerVal={22533} ctaText="Lock this price" borderColor="var(--lagoon)" />
-              <DealCard type="standard" from="IAO" to="CEB" airline="Sunlight Air" dates="Jun 22" duration="direct · 55 min" price="₱1,980" label="👥 43 bookings this month" urgency="Best value" timerVal={0} ctaText="See this deal" borderColor="" />
+              <DealCard type="hot" from="CEB" to="IAO" airline="Sunlight Air" dates="Jun 12–19" duration="direct · 55 min" price="₱1,850" label="🔥 Deal on fire · 3 seats left" timerVal={63728} ctaText="Book before it's gone" borderColor="var(--coral)" depart="06:00" arrive="06:55" />
+              <DealCard type="top" from="CRK" to="IAO" airline="Sunlight Air" dates="Jul 5–12" duration="direct · 2h 30min" price="₱4,300" label="🕐 Price drops in" timerVal={22533} ctaText="Lock this price" borderColor="var(--lagoon)" depart="07:00" arrive="09:30" />
+              <DealCard type="standard" from="IAO" to="CEB" airline="Sunlight Air" dates="Jun 22" duration="direct · 55 min" price="₱1,980" label="👥 43 bookings this month" urgency="Best value" timerVal={0} ctaText="See this deal" borderColor="" depart="07:30" arrive="08:25" />
             </div>
           </div>
 

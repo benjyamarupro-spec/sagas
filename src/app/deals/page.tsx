@@ -4,12 +4,12 @@ import { Bell, PlaneLanding } from 'lucide-react';
 import Link from 'next/link';
 
 const ALL_DEALS = [
-  { id:1, type:'hot', from:'CEB', to:'IAO', airline:'Sunlight Air', dates:'Jun 12–19', duration:'direct · 55 min', price:1850, label:'🔥 Deal on fire · 3 seats left', timerVal:63728, cta:'Book before it\'s gone' },
-  { id:2, type:'top', from:'CEB', to:'IAO', airline:'Sunlight Air', dates:'Jul 5–12', duration:'direct · 55 min', price:2100, label:'🕐 Price drops in', timerVal:22533, cta:'Lock this price' },
-  { id:3, type:'standard', from:'IAO', to:'CEB', airline:'Sunlight Air', dates:'Jun 22', duration:'direct · 55 min', price:1980, label:'👥 43 bookings this month', urgency:'Best value', timerVal:0, cta:'See this deal' },
-  { id:4, type:'hot', from:'CEB', to:'IAO', airline:'Sunlight Air', dates:'Aug 3–10', duration:'direct · 55 min', price:1850, label:'🔥 Flash sale · 2 seats left', timerVal:18200, cta:'Book before it\'s gone' },
-  { id:5, type:'top', from:'IAO', to:'CEB', airline:'Sunlight Air', dates:'Jul 20', duration:'direct · 55 min', price:1920, label:'🕐 Limited time offer', timerVal:31400, cta:'Lock this price' },
-  { id:6, type:'standard', from:'CEB', to:'IAO', airline:'Sunlight Air', dates:'Sep 1–8', duration:'direct · 55 min', price:1850, label:'📅 Low season fare', urgency:'Best time to buy', timerVal:0, cta:'See this deal' },
+  { id:1, type:'hot', from:'CEB', to:'IAO', airline:'Sunlight Air', dates:'Jun 12–19', duration:'direct · 55 min', price:1850, label:'🔥 Deal on fire · 3 seats left', timerVal:63728, cta:'Book before it\'s gone', depart:'06:00', arrive:'06:55' },
+  { id:2, type:'top', from:'CEB', to:'IAO', airline:'Sunlight Air', dates:'Jul 5–12', duration:'direct · 55 min', price:2100, label:'🕐 Price drops in', timerVal:22533, cta:'Lock this price', depart:'09:30', arrive:'10:25' },
+  { id:3, type:'standard', from:'IAO', to:'CEB', airline:'Sunlight Air', dates:'Jun 22', duration:'direct · 55 min', price:1980, label:'👥 43 bookings this month', urgency:'Best value', timerVal:0, cta:'See this deal', depart:'07:30', arrive:'08:25' },
+  { id:4, type:'hot', from:'CEB', to:'IAO', airline:'Sunlight Air', dates:'Aug 3–10', duration:'direct · 55 min', price:1850, label:'🔥 Flash sale · 2 seats left', timerVal:18200, cta:'Book before it\'s gone', depart:'12:00', arrive:'12:55' },
+  { id:5, type:'top', from:'IAO', to:'CEB', airline:'Sunlight Air', dates:'Jul 20', duration:'direct · 55 min', price:1920, label:'🕐 Limited time offer', timerVal:31400, cta:'Lock this price', depart:'11:00', arrive:'11:55' },
+  { id:6, type:'standard', from:'CEB', to:'IAO', airline:'Sunlight Air', dates:'Sep 1–8', duration:'direct · 55 min', price:1850, label:'📅 Low season fare', urgency:'Best time to buy', timerVal:0, cta:'See this deal', depart:'15:30', arrive:'16:25' },
 ];
 
 function DealCard({ deal }: { deal: typeof ALL_DEALS[0] }) {
@@ -43,6 +43,18 @@ function DealCard({ deal }: { deal: typeof ALL_DEALS[0] }) {
           <span style={{ fontFamily:'Syne', fontWeight:800, fontSize:20, color:'var(--nightsurf)' }}>{deal.from}</span>
           <PlaneLanding size={16} color="var(--lagoon-muted)" />
           <span style={{ fontFamily:'Syne', fontWeight:800, fontSize:20, color:'var(--lagoon)' }}>{deal.to}</span>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+          <span style={{ fontFamily: 'Syne', fontWeight: 800, fontSize: 18, color: 'var(--nightsurf)' }}>
+            {deal.depart}
+          </span>
+          <span style={{ fontFamily: 'Syne', fontSize: 12, color: 'var(--lagoon-muted)' }}>→</span>
+          <span style={{ fontFamily: 'Syne', fontWeight: 800, fontSize: 18, color: 'var(--nightsurf)' }}>
+            {deal.arrive}
+          </span>
+          <span style={{ fontFamily: 'Syne', fontSize: 11, color: 'var(--lagoon-muted)', marginLeft: 4 }}>
+            · {deal.duration}
+          </span>
         </div>
         <p style={{ fontFamily:'Syne', fontWeight:600, fontSize:13, color:'var(--nightsurf)', marginBottom:2 }}>✈ {deal.airline}</p>
         <p style={{ fontFamily:'Syne', fontWeight:400, fontSize:12, color:'var(--lagoon-muted)', marginBottom:16 }}>{deal.dates} · {deal.duration}</p>
