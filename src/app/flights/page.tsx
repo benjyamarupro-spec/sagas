@@ -27,6 +27,7 @@ function FlightsContent() {
   const searchParams = useSearchParams();
   const initialRoute = searchParams.get('routeFilter') || 'all';
   const departParam = searchParams.get('depart') || '';
+  const returnParam = searchParams.get('return') || '';
   const formatDate = (d: string) => {
     if (!d) return 'Select a date';
     const date = new Date(d);
@@ -159,7 +160,7 @@ function FlightsContent() {
                       <p style={{ fontFamily: 'Syne', fontWeight: 800, fontSize: 26, color: 'var(--lagoon)' }}>₱{f.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</p>
                       <p style={{ fontFamily: 'Syne', fontWeight: 400, fontSize: 11, color: 'var(--lagoon-muted)', marginBottom: 8 }}>per person</p>
                       <Link
-                        href={`/booking?flightId=${f.id}&from=${f.from}&to=${f.to}&depart=${f.depart}&arrive=${f.arrive}&duration=${f.duration}&price=${f.price}`}
+                        href={`/booking?from=${f.from}&to=${f.to}&depart=${f.depart}&arrive=${f.arrive}&duration=${encodeURIComponent(f.duration)}&price=${f.price}&departDate=${departParam}${returnParam ? '&returnDate='+returnParam : ''}`}
                         style={{ background: 'var(--lagoon)', color: 'white', borderRadius: 8, padding: '10px 20px', fontFamily: 'Syne', fontWeight: 800, fontSize: 12, textDecoration: 'none', display: 'inline-block' }}
                       >
                         Book now →
