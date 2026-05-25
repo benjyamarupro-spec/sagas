@@ -169,7 +169,7 @@ function FlightsContent() {
 
 export default function FlightsPage() {
   return (
-    <Suspense fallback={<div style={{padding:40}}>Loading...</div>}>
+    <Suspense fallback={<div style={{ minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><p style={{ fontFamily: 'Syne', color: 'var(--lagoon-muted)' }}>Loading flights...</p></div>}>
       <FlightsContent />
     </Suspense>
   );

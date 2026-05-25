@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { PlaneLanding, PlaneTakeoff, Lock, Search, Bell, ChevronRight, Waves, Music, Trees, Droplets, BookOpen, Calendar } from 'lucide-react';
+import { PlaneLanding, Bell, ChevronRight, Waves, Music, Trees, Droplets, BookOpen, Calendar } from 'lucide-react';
 
 // --- DONNÉES ---
 const ROUTES = [
@@ -83,12 +83,17 @@ function DealCard({ type, from, to, airline, dates, duration, price, label, urge
         <p style={{ fontFamily: 'Syne', fontWeight: 400, fontSize: 11, color: 'var(--lagoon-muted)' }}>one way</p>
       </div>
       <div style={{ padding: '0 20px 20px' }}>
-        <a href="#" target="_blank" rel="noopener noreferrer" style={{
-          display: 'block', width: '100%', textAlign: 'center',
-          background: ctaBg, color: 'white', border: 'none', borderRadius: 8,
-          padding: '12px', fontFamily: 'Syne', fontWeight: 800, fontSize: 13,
-          cursor: 'pointer', textDecoration: 'none',
-        }}>{ctaText} →</a>
+        <Link
+          href={`/booking?from=${from}&to=${to}&depart=&arrive=&duration=${duration}&price=${price}`}
+          style={{
+            display: 'block', width: '100%', textAlign: 'center',
+            background: ctaBg, color: 'white', borderRadius: 8,
+            padding: '12px', fontFamily: 'Syne', fontWeight: 800, fontSize: 13,
+            textDecoration: 'none',
+          }}
+        >
+          {ctaText} →
+        </Link>
       </div>
     </div>
   );
@@ -99,21 +104,9 @@ export default function HomePage() {
   const router = useRouter();
   const [direction, setDirection] = useState<'to' | 'from'>('to');
   const [selectedCity, setSelectedCity] = useState('');
-  const [showCityDropdown, setShowCityDropdown] = useState(false);
   const [departDate, setDepartDate] = useState('');
   const [returnDate, setReturnDate] = useState('');
-  const [pax, setPax] = useState('2 adults · Economy');
-  const today = new Date().toISOString().split('T')[0];
-
-  useEffect(() => {
-    const close = () => setShowCityDropdown(false);
-    if (showCityDropdown) document.addEventListener('click', close);
-    return () => document.removeEventListener('click', close);
-  }, [showCityDropdown]);
-
-  const handleSearch = () => {
-    router.push(`/flights?direction=${direction}&from=${selectedCity || 'CEB'}&depart=${departDate}&return=${returnDate}`);
-  };
+  const [pax, setPax] = useState('2');
 
   return (
     <div>
@@ -144,145 +137,170 @@ export default function HomePage() {
           </p>
 
           {/* SEARCH ENGINE */}
-          <div style={{ background: 'white', borderRadius: 16, border: '1px solid var(--border)', overflow: 'hidden' }}>
-            {/* Toggle */}
+          <div style={{
+            background: 'white', borderRadius: 16,
+            border: '1px solid var(--border)', overflow: 'visible',
+            marginTop: 32, position: 'relative', zIndex: 10,
+          }}>
+            {/* Direction Toggle */}
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr' }}>
               {(['to', 'from'] as const).map(d => (
-                <button key={d} onClick={() => setDirection(d)} style={{
-                  padding: '14px', fontFamily: 'Syne', fontWeight: 800, fontSize: 14,
-                  background: direction === d ? 'var(--lagoon)' : 'var(--seafoam)',
-                  color: direction === d ? 'white' : 'var(--lagoon-muted)',
-                  border: 'none', cursor: 'pointer',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-                }}>
-                  {d === 'to' ? <PlaneLanding size={16} /> : <PlaneTakeoff size={16} />}
+                <button
+                  key={d}
+                  onClick={() => { setDirection(d); setSelectedCity(''); }}
+                  style={{
+                    padding: '14px', fontFamily: 'Syne', fontWeight: 800, fontSize: 14,
+                    background: direction === d ? 'var(--lagoon)' : 'var(--seafoam)',
+                    color: direction === d ? 'white' : 'var(--lagoon-muted)',
+                    border: 'none', cursor: 'pointer',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+                    borderRadius: d === 'to' ? '16px 0 0 0' : '0 16px 0 0',
+                  }}
+                >
+                  {d === 'to' ? '🛬' : '🛫'}
                   {d === 'to' ? 'Flying to Siargao' : 'Flying from Siargao'}
                 </button>
               ))}
             </div>
 
-            {/* Fields */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1.5fr 1fr 1fr 1fr auto', borderTop: '1px solid var(--border)' }}>
+            {/* Fields row */}
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: '140px 1fr 1fr 1fr 1fr auto',
+              borderTop: '1px solid var(--border)',
+            }}>
               {/* Locked IAO */}
-              <div style={{ padding: '14px 16px', background: 'var(--seafoam)', borderRight: '1px solid var(--border)' }}>
-                <p style={{ fontFamily: 'Syne', fontWeight: 400, fontSize: 10, color: 'var(--lagoon-muted)', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 4, display: 'flex', alignItems: 'center', gap: 4 }}>
-                  <Lock size={10} /> Destination
+              <div style={{
+                padding: '14px 16px',
+                background: 'var(--seafoam)',
+                borderRight: '1px solid var(--border)',
+              }}>
+                <p style={{ fontFamily: 'Syne', fontSize: 10, color: 'var(--lagoon-muted)', textTransform: 'uppercase', letterSpacing: 1, margin: '0 0 4px', display: 'flex', alignItems: 'center', gap: 4 }}>
+                  🔒 {direction === 'to' ? 'Destination' : 'Departure'}
                 </p>
-                <p style={{ fontFamily: 'Syne', fontWeight: 800, fontSize: 20, color: 'var(--lagoon)' }}>IAO</p>
-                <p style={{ fontFamily: 'Syne', fontWeight: 400, fontSize: 10, color: 'var(--lagoon-muted)', fontStyle: 'italic' }}>Always Siargao</p>
+                <p style={{ fontFamily: 'Syne', fontWeight: 800, fontSize: 20, color: 'var(--lagoon)', margin: 0 }}>IAO</p>
+                <p style={{ fontFamily: 'Syne', fontSize: 10, color: 'var(--lagoon-muted)', fontStyle: 'italic', margin: 0 }}>Always Siargao</p>
               </div>
 
-              {/* CITY FIELD */}
-              <div
-                style={{ padding: '14px 16px', borderRight: '1px solid var(--border)', position: 'relative', cursor: 'pointer' }}
-                onClick={() => setShowCityDropdown(prev => !prev)}
-              >
-                <p style={{
-                  fontFamily: 'Syne', fontWeight: 400, fontSize: 10,
-                  color: 'var(--lagoon-muted)', textTransform: 'uppercase',
-                  letterSpacing: 1, marginBottom: 4, pointerEvents: 'none'
-                }}>
+              {/* City selector — SIMPLE SELECT */}
+              <div style={{ padding: '14px 16px', borderRight: '1px solid var(--border)' }}>
+                <p style={{ fontFamily: 'Syne', fontSize: 10, color: 'var(--lagoon-muted)', textTransform: 'uppercase', letterSpacing: 1, margin: '0 0 4px' }}>
                   {direction === 'to' ? 'Flying from' : 'Flying to'}
                 </p>
-                <p style={{
-                  fontFamily: 'Syne',
-                  fontWeight: selectedCity ? 700 : 400,
-                  fontSize: 14,
-                  color: selectedCity ? 'var(--nightsurf)' : 'var(--lagoon-muted)',
-                  pointerEvents: 'none', margin: 0
-                }}>
-                  {selectedCity
-                    ? `${CITIES.find(c => c.code === selectedCity)?.label} (${selectedCity})`
-                    : 'Choose a city...'}
-                </p>
+                <select
+                  value={selectedCity}
+                  onChange={e => setSelectedCity(e.target.value)}
+                  style={{
+                    fontFamily: 'Syne',
+                    fontWeight: selectedCity ? 700 : 400,
+                    fontSize: 14,
+                    color: selectedCity ? 'var(--nightsurf)' : 'var(--lagoon-muted)',
+                    border: 'none', outline: 'none',
+                    background: 'transparent',
+                    width: '100%', cursor: 'pointer',
+                    appearance: 'auto',
+                  }}
+                >
+                  <option value="">Choose a city...</option>
+                  <option value="CEB">Cebu (CEB) — Mactan-Cebu Intl</option>
+                  <option value="CRK">Clark (CRK) — Clark International</option>
+                  {direction === 'from' && <option value="IAO">Siargao (IAO) — Sayak Airport</option>}
+                </select>
                 {!selectedCity && (
-                  <p style={{ fontFamily: 'Syne', fontSize: 11, color: 'var(--lagoon-muted)', margin: 0, pointerEvents: 'none' }}>
-                    Cebu · Clark
-                  </p>
-                )}
-
-                {showCityDropdown && (
-                  <div
-                    style={{
-                      position: 'absolute', top: '100%', left: 0,
-                      minWidth: 260, background: 'white',
-                      border: '1px solid var(--border)', borderRadius: 10,
-                      zIndex: 300, boxShadow: '0 8px 32px rgba(0,0,0,0.12)',
-                      overflow: 'hidden',
-                    }}
-                    onClick={e => e.stopPropagation()}
-                  >
-                    {CITIES.map(c => (
-                      <div
-                        key={c.code}
-                        onClick={() => { setSelectedCity(c.code); setShowCityDropdown(false); }}
-                        style={{
-                          padding: '12px 16px',
-                          borderBottom: '1px solid var(--border)',
-                          cursor: 'pointer',
-                          background: selectedCity === c.code ? 'var(--seafoam)' : 'white',
-                          transition: 'background 0.15s',
-                        }}
-                        onMouseEnter={e => { if (selectedCity !== c.code) e.currentTarget.style.background = 'var(--seafoam)'; }}
-                        onMouseLeave={e => { if (selectedCity !== c.code) e.currentTarget.style.background = 'white'; }}
-                      >
-                        <p style={{ fontFamily: 'Syne', fontWeight: 700, fontSize: 14, color: 'var(--nightsurf)', margin: '0 0 2px' }}>
-                          {c.label} <span style={{ color: 'var(--lagoon)' }}>({c.code})</span>
-                        </p>
-                        <p style={{ fontFamily: 'Syne', fontSize: 11, color: 'var(--lagoon-muted)', margin: 0 }}>{c.sub}</p>
-                      </div>
-                    ))}
-                  </div>
+                  <p style={{ fontFamily: 'Syne', fontSize: 11, color: 'var(--lagoon-muted)', margin: '2px 0 0' }}>Cebu · Clark</p>
                 )}
               </div>
 
-              {/* Departure */}
+              {/* Departure date */}
               <div style={{ padding: '14px 16px', borderRight: '1px solid var(--border)' }}>
-                <p style={{ fontFamily: 'Syne', fontWeight: 400, fontSize: 10, color: 'var(--lagoon-muted)', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 4 }}>Departure</p>
+                <p style={{ fontFamily: 'Syne', fontSize: 10, color: 'var(--lagoon-muted)', textTransform: 'uppercase', letterSpacing: 1, margin: '0 0 4px' }}>Departure</p>
                 <input
                   type="date"
                   value={departDate}
-                  min={today}
+                  min={new Date().toISOString().split('T')[0]}
                   onChange={e => setDepartDate(e.target.value)}
                   style={{
-                    border: 'none', outline: 'none',
                     fontFamily: 'Syne', fontSize: 13,
                     color: departDate ? 'var(--nightsurf)' : 'var(--lagoon-muted)',
-                    width: '100%', background: 'transparent', cursor: 'pointer',
+                    border: 'none', outline: 'none',
+                    background: 'transparent', width: '100%', cursor: 'pointer',
                   }}
                 />
               </div>
 
-              {/* Return */}
+              {/* Return date */}
               <div style={{ padding: '14px 16px', borderRight: '1px solid var(--border)' }}>
-                <p style={{ fontFamily: 'Syne', fontWeight: 400, fontSize: 10, color: 'var(--lagoon-muted)', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 4 }}>Return</p>
+                <p style={{ fontFamily: 'Syne', fontSize: 10, color: 'var(--lagoon-muted)', textTransform: 'uppercase', letterSpacing: 1, margin: '0 0 4px' }}>Return</p>
                 <input
                   type="date"
                   value={returnDate}
-                  min={departDate || today}
+                  min={departDate || new Date().toISOString().split('T')[0]}
                   onChange={e => setReturnDate(e.target.value)}
                   style={{
-                    border: 'none', outline: 'none',
                     fontFamily: 'Syne', fontSize: 13,
                     color: returnDate ? 'var(--nightsurf)' : 'var(--lagoon-muted)',
-                    width: '100%', background: 'transparent', cursor: 'pointer',
+                    border: 'none', outline: 'none',
+                    background: 'transparent', width: '100%', cursor: 'pointer',
                   }}
                 />
+                {departDate && returnDate && (
+                  <p style={{ fontFamily: 'Syne', fontSize: 11, color: 'var(--lagoon-muted)', margin: '2px 0 0' }}>
+                    {Math.round((new Date(returnDate).getTime() - new Date(departDate).getTime()) / (1000 * 60 * 60 * 24))} nights
+                  </p>
+                )}
               </div>
 
               {/* Passengers */}
               <div style={{ padding: '14px 16px', borderRight: '1px solid var(--border)' }}>
-                <p style={{ fontFamily: 'Syne', fontWeight: 400, fontSize: 10, color: 'var(--lagoon-muted)', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 4 }}>Passengers</p>
-                <p style={{ fontFamily: 'Syne', fontSize: 13, color: 'var(--nightsurf)' }}>{pax}</p>
+                <p style={{ fontFamily: 'Syne', fontSize: 10, color: 'var(--lagoon-muted)', textTransform: 'uppercase', letterSpacing: 1, margin: '0 0 4px' }}>Passengers</p>
+                <select
+                  value={pax}
+                  onChange={e => setPax(e.target.value)}
+                  style={{
+                    fontFamily: 'Syne', fontWeight: 600, fontSize: 13,
+                    color: 'var(--nightsurf)', border: 'none', outline: 'none',
+                    background: 'transparent', cursor: 'pointer', appearance: 'auto',
+                  }}
+                >
+                  <option value="1">1 adult</option>
+                  <option value="2">2 adults</option>
+                  <option value="3">3 adults</option>
+                  <option value="4">4 adults</option>
+                  <option value="5">5 adults</option>
+                  <option value="6">6 adults</option>
+                </select>
+                <p style={{ fontFamily: 'Syne', fontSize: 11, color: 'var(--lagoon-muted)', margin: '2px 0 0' }}>Economy</p>
               </div>
 
-              {/* Search Button */}
-              <button onClick={handleSearch} style={{
-                background: 'var(--coral)', color: 'white', border: 'none', cursor: 'pointer',
-                padding: '0 28px', fontFamily: 'Syne', fontWeight: 800, fontSize: 14,
-                display: 'flex', alignItems: 'center', gap: 8,
-              }}>
-                <Search size={16} /> SEARCH
+              {/* Search button */}
+              <button
+                onClick={() => {
+                  if (!selectedCity) {
+                    alert('Please choose a city first (Cebu or Clark)');
+                    return;
+                  }
+                  const routeFilter = selectedCity === 'CRK' ? 'crk' : 'ceb';
+                  const params = new URLSearchParams({
+                    direction,
+                    from: direction === 'to' ? selectedCity : 'IAO',
+                    to: direction === 'to' ? 'IAO' : selectedCity,
+                    routeFilter,
+                    ...(departDate && { depart: departDate }),
+                    ...(returnDate && { return: returnDate }),
+                    pax,
+                  });
+                  router.push(`/flights?${params.toString()}`);
+                }}
+                style={{
+                  background: 'var(--coral)', color: 'white',
+                  border: 'none', cursor: 'pointer',
+                  padding: '0 28px',
+                  fontFamily: 'Syne', fontWeight: 800, fontSize: 14,
+                  display: 'flex', alignItems: 'center', gap: 8,
+                  borderRadius: '0 0 16px 0',
+                }}
+              >
+                🔍 SEARCH
               </button>
             </div>
           </div>
