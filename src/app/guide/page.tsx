@@ -174,7 +174,7 @@ export default function GuidePage() {
                       <p style={{ fontFamily: 'Syne', fontWeight: 800, fontSize: 14, color: 'var(--nightsurf)' }}>{mo.m}</p>
                       <span style={{ fontSize: 16 }}>{mo.w}</span>
                     </div>
-                    <p style={{ fontFamily: 'Syne', fontWeight: 800, fontSize: 15, color: 'var(--lagoon)', marginBottom: 2 }}>₱{mo.price.toLocaleString()}</p>
+                    <p style={{ fontFamily: 'Syne', fontWeight: 800, fontSize: 15, color: 'var(--lagoon)', marginBottom: 2 }}>₱{mo.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</p>
                     <p style={{ fontFamily: 'Syne', fontWeight: 400, fontSize: 11, color: 'var(--lagoon-muted)' }}>{mo.crowd} crowds</p>
                     <p style={{ fontSize: 12, marginTop: 4 }}>{'⭐'.repeat(mo.stars)}</p>
                   </div>
