@@ -13,7 +13,7 @@ export default function Logo({ variant = 'light', size = 'md' }: LogoProps) {
   const s = sizes[size];
 
   return (
-    <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none' }}>
+    <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none', outline: 'none' }}>
       <svg viewBox="0 0 82 74" width={s.svg} height={s.svg * 0.9}>
         <path
           d="M 8 60 C 8 36, 20 36, 26 46 C 32 56, 44 56, 50 40 C 56 24, 64 12, 70 10"

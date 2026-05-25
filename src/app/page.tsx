@@ -21,7 +21,7 @@ const VIBES = [
     icon: Music, name: 'General Luna', desc: 'The beating heart. Restaurants, bars, nightlife, sunsets, people, energy.',
     tag: 'Party · Nightlife', tagBg: 'var(--golden-light)', tagColor: '#7A5A00',
     iconBg: 'var(--golden-light)', iconColor: '#7A5A00',
-    img: 'https://images.unsplash.com/photo-1540202404-d0c7fe46a1b3?w=600&h=300&fit=crop&q=80',
+    img: 'https://images.unsplash.com/photo-1510414842594-a61c69b5ae57?w=600&h=300&fit=crop&q=80',
   },
   {
     icon: Trees, name: 'North Siargao', desc: 'Empty beaches, raw jungle, zero crowds. The island before the island.',
