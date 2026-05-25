@@ -26,6 +26,12 @@ const ALL_FLIGHTS = [
 function FlightsContent() {
   const searchParams = useSearchParams();
   const initialRoute = searchParams.get('routeFilter') || 'all';
+  const departParam = searchParams.get('depart') || '';
+  const formatDate = (d: string) => {
+    if (!d) return 'Select a date';
+    const date = new Date(d);
+    return date.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
+  };
   const [maxPrice, setMaxPrice] = useState(5000);
   const [sortBy, setSortBy] = useState('cheapest');
   const [timeFilter, setTimeFilter] = useState('all');
@@ -144,6 +150,9 @@ function FlightsContent() {
                         <span style={{ fontFamily: 'Syne', fontWeight: 800, fontSize: 20, color: 'var(--nightsurf)' }}>{f.arrive}</span>
                         <span style={{ fontFamily: 'Syne', fontWeight: 800, fontSize: 13, color: 'var(--lagoon)' }}>{f.to}</span>
                       </div>
+                      <p style={{ fontFamily: 'Syne', fontWeight: 400, fontSize: 12, color: 'var(--lagoon-muted)', margin: '4px 0 0' }}>
+                        📅 {departParam ? formatDate(departParam) : 'Date not selected'}
+                      </p>
                     </div>
                     <div style={{ textAlign: 'right' }}>
                       <p style={{ fontFamily: 'Syne', fontWeight: 400, fontSize: 11, color: 'var(--lagoon-muted)' }}>from</p>
