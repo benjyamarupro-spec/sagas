@@ -336,57 +336,83 @@ function SiargaoMap({ filter }: { filter: number | 'all' }) {
   useEffect(() => {
     const initMap = () => {
       if (!window.google) return;
-      const map = new window.google.maps.Map(document.getElementById('siargao-map'), {
-        center: { lat: 9.787, lng: 126.155 },
-        zoom: 14,
-        styles: [
-          { featureType: 'poi', stylers: [{ visibility: 'off' }] },
-          { featureType: 'transit', stylers: [{ visibility: 'off' }] },
-          { elementType: 'geometry', stylers: [{ color: '#f5f5f5' }] },
-          { elementType: 'labels.icon', stylers: [{ visibility: 'off' }] },
-          { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#c9d8e8' }] },
-          { featureType: 'road', elementType: 'geometry', stylers: [{ color: '#ffffff' }] },
-        ],
-        mapTypeControl: false,
-        streetViewControl: false,
-        fullscreenControl: false,
-      });
+
+      const map = new window.google.maps.Map(
+        document.getElementById('siargao-map'),
+        {
+          center: { lat: 9.7870, lng: 126.1550 },
+          zoom: 14,
+          styles: [
+            { featureType: 'poi', stylers: [{ visibility: 'off' }] },
+            { featureType: 'transit', stylers: [{ visibility: 'off' }] },
+            { elementType: 'geometry', stylers: [{ color: '#f5f5f5' }] },
+            { elementType: 'labels.icon', stylers: [{ visibility: 'off' }] },
+            { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#c9d8e8' }] },
+            { featureType: 'road', elementType: 'geometry', stylers: [{ color: '#ffffff' }] },
+          ],
+          mapTypeControl: false,
+          streetViewControl: false,
+          fullscreenControl: false,
+        }
+      );
+
+      const service = new window.google.maps.places.PlacesService(map);
 
       const visible = filter === 'all'
         ? RESTAURANTS
         : RESTAURANTS.filter(r => r.priceLevel === filter);
 
-      visible.forEach(r => {
-        const pc = PRICE_COLORS[r.priceLevel];
-        const marker = new window.google.maps.Marker({
-          position: r.coord,
-          map,
-          title: r.name,
-          icon: {
-            path: window.google.maps.SymbolPath.CIRCLE,
-            scale: r.highlight ? 10 : 8,
-            fillColor: r.highlight ? '#E8B44A' : pc.color,
-            fillOpacity: 1,
-            strokeColor: 'white',
-            strokeWeight: 2,
+      visible.forEach(restaurant => {
+        const pc = PRICE_COLORS[restaurant.priceLevel];
+
+        service.findPlaceFromQuery(
+          {
+            query: `${restaurant.name} General Luna Siargao Philippines`,
+            fields: ['geometry', 'name', 'place_id'],
           },
-        });
+          (results: any[], status: string) => {
+            if (
+              status === window.google.maps.places.PlacesServiceStatus.OK &&
+              results &&
+              results[0]?.geometry?.location
+            ) {
+              const marker = new window.google.maps.Marker({
+                position: results[0].geometry.location,
+                map,
+                title: restaurant.name,
+                icon: {
+                  path: window.google.maps.SymbolPath.CIRCLE,
+                  scale: restaurant.highlight ? 11 : 8,
+                  fillColor: restaurant.highlight ? '#E8B44A' : pc.color,
+                  fillOpacity: 1,
+                  strokeColor: 'white',
+                  strokeWeight: 2,
+                },
+              });
 
-        const infoWindow = new window.google.maps.InfoWindow({
-          content: `
-            <div style="font-family:Syne,sans-serif;padding:8px;min-width:160px">
-              <p style="font-weight:800;font-size:14px;margin:0 0 4px;color:#071315">${r.name}${r.highlight ? ' ⭐' : ''}</p>
-              <p style="font-size:12px;color:#4A9080;margin:0 0 2px">${r.cuisine}</p>
-              <p style="font-size:13px;font-weight:800;color:${pc.color};margin:0">${r.price}</p>
-            </div>
-          `,
-        });
+              const infoWindow = new window.google.maps.InfoWindow({
+                content: `
+                  <div style="font-family:Syne,sans-serif;padding:8px;min-width:180px">
+                    <p style="font-weight:800;font-size:14px;margin:0 0 4px;color:#071315">
+                      ${restaurant.name}${restaurant.highlight ? ' ⭐' : ''}
+                    </p>
+                    <p style="font-size:12px;color:#4A9080;margin:0 0 4px">${restaurant.cuisine}</p>
+                    <p style="font-size:13px;font-weight:800;color:${pc.color};margin:0 0 6px">${restaurant.price}</p>
+                    <p style="font-size:12px;color:#071315;margin:0;font-style:italic">${restaurant.specialty}</p>
+                  </div>
+                `,
+              });
 
-        marker.addListener('click', () => infoWindow.open(map, marker));
+              marker.addListener('click', () => {
+                infoWindow.open(map, marker);
+              });
+            }
+          }
+        );
       });
     };
 
-    if (window.google) {
+    if (window.google?.maps?.places) {
       initMap();
     } else {
       window.initMap = initMap;
@@ -394,7 +420,15 @@ function SiargaoMap({ filter }: { filter: number | 'all' }) {
   }, [filter]);
 
   return (
-    <div id="siargao-map" style={{ width: '100%', height: 420, borderRadius: 12, border: '1px solid var(--border)' }} />
+    <div
+      id="siargao-map"
+      style={{
+        width: '100%',
+        height: 480,
+        borderRadius: 12,
+        border: '1px solid var(--border)',
+      }}
+    />
   );
 }
 
@@ -430,7 +464,7 @@ export default function GuidePage() {
     <div>
       {/* Google Maps Script */}
       <Script
-        src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY}&callback=initMap`}
+        src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY}&libraries=places&callback=initMap`}
         strategy="lazyOnload"
       />
 
