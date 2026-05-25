@@ -40,8 +40,9 @@ const VIBES = [
 ];
 
 const CITIES = [
-  { label: 'Cebu', code: 'CEB', sub: 'Mactan-Cebu Intl' },
-  { label: 'Siargao', code: 'IAO', sub: 'Sayak Airport (return)' },
+  { label: 'Cebu', code: 'CEB', sub: 'Mactan-Cebu International' },
+  { label: 'Clark (Angeles)', code: 'CRK', sub: 'Clark International Airport · ~2h from Manila' },
+  { label: 'Siargao', code: 'IAO', sub: 'Sayak Airport (return flight)' },
 ];
 
 // --- DEAL CARD ---
@@ -175,7 +176,7 @@ export default function HomePage() {
                   <p style={{ fontFamily: 'Syne', fontWeight: selectedCity ? 800 : 400, fontSize: selectedCity ? 16 : 14, color: selectedCity ? 'var(--nightsurf)' : 'var(--lagoon-muted)' }}>
                     {selectedCity || 'Choose a city...'}
                   </p>
-                  {!selectedCity && <p style={{ fontFamily: 'Syne', fontSize: 11, color: 'var(--lagoon-muted)' }}>Cebu · Siargao</p>}
+                  {!selectedCity && <p style={{ fontFamily: 'Syne', fontSize: 11, color: 'var(--lagoon-muted)' }}>Cebu · Clark · Siargao</p>}
                 </button>
                 {showCityDropdown && (
                   <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, background: 'white', border: '1px solid var(--border)', borderRadius: 8, zIndex: 100, boxShadow: '0 8px 24px rgba(0,0,0,0.1)' }}>
