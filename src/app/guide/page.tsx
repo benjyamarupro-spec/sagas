@@ -1,52 +1,309 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { Waves, Music, Trees, Droplets, ChevronRight } from 'lucide-react';
+import { Waves, Music, Trees, Droplets, Mountain, Wind, ChevronRight, MapPin } from 'lucide-react';
 import Link from 'next/link';
+import Script from 'next/script';
+
+// ============================================================
+// DONNÉES
+// ============================================================
 
 const TABS = [
   { id: 'overview',         label: 'Overview' },
   { id: 'how-to-get-there', label: 'How to get there' },
   { id: 'best-time',        label: 'Best time to go' },
   { id: 'island-zones',     label: 'Island zones' },
+  { id: 'restaurants',      label: 'Restaurants' },
   { id: 'budget',           label: 'Budget' },
   { id: 'tips',             label: 'Tips & tricks' },
 ];
 
 const ZONES = [
-  { icon: Waves, name: 'Cloud 9', tag: 'Surf · Legend', tagBg: 'var(--seafoam)', tagColor: 'var(--lagoon)', iconBg: 'var(--seafoam)', iconColor: 'var(--lagoon)', img: 'https://images.unsplash.com/photo-1502680390469-be75c86b636f?w=600&h=280&fit=crop&q=80', desc: 'The legendary barrel wave. World-class surf, pro competitions, pure stoke. Even non-surfers love the boardwalk sunsets.', vibe: 'For surfers, surf fans, and photographers.', best: 'October — competition month' },
-  { icon: Music, name: 'General Luna', tag: 'Party · Nightlife', tagBg: 'var(--golden-light)', tagColor: '#7A5A00', iconBg: 'var(--golden-light)', iconColor: '#7A5A00', img: 'https://images.unsplash.com/photo-1510414842594-a61c69b5ae57?w=600&h=280&fit=crop&q=80', desc: 'The beating heart of Siargao. Restaurants, bars, nightlife, sunsets, digital nomads, surf schools — all in one place.', vibe: 'For those who want to be in the middle of it all.', best: 'December–March' },
-  { icon: Trees, name: 'North Siargao', tag: 'Wild · Off-grid', tagBg: '#E8F5E9', tagColor: '#2E7D32', iconBg: '#E8F5E9', iconColor: '#2E7D32', img: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&h=280&fit=crop&q=80', desc: 'Empty beaches, raw jungle, zero crowds. Pacifico, Burgos — the island before the tourists arrived.', vibe: 'For adventurers who want the real thing.', best: 'Any time (always quiet)' },
-  { icon: Droplets, name: 'Sugba & Islands', tag: 'Lagoons · Nature', tagBg: '#E3F2FD', tagColor: '#1565C0', iconBg: '#E3F2FD', iconColor: '#1565C0', img: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=600&h=280&fit=crop&q=80', desc: 'Turquoise lagoons, island hopping, snorkeling. Sugba Lagoon + the Tri-Island Tour are absolute must-dos.', vibe: 'For families, couples, and nature lovers.', best: 'March–May (calm seas)' },
+  {
+    icon: Waves,
+    name: 'Cloud 9',
+    tag: 'Surf · Legend',
+    tagBg: 'var(--seafoam)', tagColor: 'var(--lagoon)',
+    iconBg: 'var(--seafoam)', iconColor: 'var(--lagoon)',
+    img: 'https://images.unsplash.com/photo-1502680390469-be75c86b636f?w=700&h=420&fit=crop&q=85',
+    desc: 'The most iconic surf break in Southeast Asia. Cloud 9 is a hollow right-hand barrel that draws world-class surfers every October for the Siargao International Surfing Cup. The wooden boardwalk stretching out to the break is a landmark in itself — perfect for sunset watching even if you\'ve never touched a surfboard.',
+    vibe: 'For surfers, surf fans, and sunset chasers.',
+    best: 'October — competition month, perfect swell',
+    coord: { lat: 9.8128, lng: 126.1748 },
+  },
+  {
+    icon: Music,
+    name: 'General Luna',
+    tag: 'Party · Nightlife',
+    tagBg: 'var(--golden-light)', tagColor: '#7A5A00',
+    iconBg: 'var(--golden-light)', iconColor: '#7A5A00',
+    img: 'https://images.unsplash.com/photo-1510414842594-a61c69b5ae57?w=700&h=420&fit=crop&q=85',
+    desc: 'The beating heart of Siargao tourism. General Luna is where everything happens — international restaurants, cocktail bars, surf schools, scooter rentals, live music, and some of the best sunsets in the Philippines. The famous AFAM Bridge is the go-to spot for golden hour. Digital nomads, long-term travelers, and backpackers all converge here.',
+    vibe: 'For those who want to be in the middle of it all.',
+    best: 'December–March (peak season energy)',
+    coord: { lat: 9.8599, lng: 126.1862 },
+  },
+  {
+    icon: Droplets,
+    name: 'Maasin River',
+    tag: 'Nature · Chill',
+    tagBg: '#E3F2FD', tagColor: '#1565C0',
+    iconBg: '#E3F2FD', iconColor: '#1565C0',
+    img: 'https://images.unsplash.com/photo-1516026672322-bc52d61a47d7?w=700&h=420&fit=crop&q=85',
+    desc: 'A hidden gem just minutes from General Luna. Maasin River is a peaceful mangrove river where you can kayak or paddle board through dense jungle canopy. Incredibly photogenic, serene, and almost always uncrowded. One of the best half-day activities on the island — rent a board and explore.',
+    vibe: 'For those who want nature without the effort.',
+    best: 'Dry season (Feb–May) for calm water',
+    coord: { lat: 9.8750, lng: 126.1650 },
+  },
+  {
+    icon: Mountain,
+    name: 'Beto Cold Spring',
+    tag: 'Hidden Gem · Fresh water',
+    tagBg: '#E8F5E9', tagColor: '#2E7D32',
+    iconBg: '#E8F5E9', iconColor: '#2E7D32',
+    img: 'https://images.unsplash.com/photo-1544551763-77ef2d0cfc6c?w=700&h=420&fit=crop&q=85',
+    desc: 'A natural freshwater spring hidden in the jungle — crystal clear, cold, and incredibly refreshing. Beto Cold Spring is one of Siargao\'s best-kept secrets. You swim in a natural pool fed by underground springs, surrounded by tropical forest. Fewer than 5% of visitors ever find it. Bring a local guide.',
+    vibe: 'For adventurers willing to go off the beaten track.',
+    best: 'Any time — water is always cold and clear',
+    coord: { lat: 9.9100, lng: 126.0900 },
+  },
+  {
+    icon: Trees,
+    name: 'Pacifico (North)',
+    tag: 'Wild · Off-grid',
+    tagBg: '#F3E5F5', tagColor: '#6A1B9A',
+    iconBg: '#F3E5F5', iconColor: '#6A1B9A',
+    img: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=700&h=420&fit=crop&q=85',
+    desc: 'Head 45 minutes north and the island transforms completely. Pacifico is raw, empty, and breathtaking — long stretches of white sand, powerful beach breaks, and almost no tourists. Local fishermen still outnumber visitors here. A popular surf destination for those who want to escape the General Luna crowd.',
+    vibe: 'For surfers and adventurers escaping the crowd.',
+    best: 'October–February for surf, any time for solitude',
+    coord: { lat: 9.9800, lng: 126.0500 },
+  },
+  {
+    icon: Wind,
+    name: 'Alegría Beach',
+    tag: 'Unspoiled · Local',
+    tagBg: '#FFF3E0', tagColor: '#E65100',
+    iconBg: '#FFF3E0', iconColor: '#E65100',
+    img: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=700&h=420&fit=crop&q=85',
+    desc: 'One of Siargao\'s most beautiful and least-visited beaches. Alegría sits on the northwestern coast — powdery white sand, turquoise water, and almost no infrastructure. You\'ll need a motorbike and about an hour from General Luna, but the reward is a beach that feels entirely yours.',
+    vibe: 'For those who want paradise without the crowd.',
+    best: 'Dry season (Feb–May) — calm water, clear sky',
+    coord: { lat: 9.9300, lng: 126.0200 },
+  },
+  {
+    icon: Droplets,
+    name: 'Sugba Lagoon',
+    tag: 'Lagoons · Must-do',
+    tagBg: '#E1F5FE', tagColor: '#0277BD',
+    iconBg: '#E1F5FE', iconColor: '#0277BD',
+    img: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=700&h=420&fit=crop&q=85',
+    desc: 'Siargao\'s most iconic photo spot — an emerald green lagoon surrounded by mangroves, accessible only by boat (30–40 min from GL). Sugba is everything you imagine the Philippines to be: turquoise water, swing ropes into the lagoon, paddleboards, and total serenity. Go early morning to avoid the crowds.',
+    vibe: 'For everyone — this one is unmissable.',
+    best: 'March–May (calmest seas, best visibility)',
+    coord: { lat: 9.7500, lng: 126.0800 },
+  },
+];
+
+const RESTAURANTS = [
+  {
+    name: 'Alma',
+    zone: 'General Luna',
+    price: '₱₱₱',
+    priceLevel: 3,
+    cuisine: 'Fine Dining · Filipino',
+    desc: "Benjamin's personal favorite. Alma is Siargao's most refined dining experience — intimate, beautifully plated, and genuinely delicious. Worth every peso.",
+    specialty: 'Seasonal tasting menu',
+    coord: { lat: 9.8610, lng: 126.1855 },
+    highlight: true,
+  },
+  {
+    name: 'Ferns',
+    zone: 'General Luna',
+    price: '₱₱₱',
+    priceLevel: 3,
+    cuisine: 'International · Fusion',
+    desc: 'Elegant garden setting with creative dishes. One of the most instagrammed restaurants on the island. Book ahead.',
+    specialty: 'Grilled seafood',
+    coord: { lat: 9.8605, lng: 126.1860 },
+    highlight: false,
+  },
+  {
+    name: 'Wild Artisan Kitchen',
+    zone: 'General Luna',
+    price: '₱₱₱',
+    priceLevel: 3,
+    cuisine: 'Artisan · Natural',
+    desc: 'Farm-to-table concept with a focus on local ingredients. Creative, beautifully presented, and genuinely unique.',
+    specialty: 'Seasonal market menu',
+    coord: { lat: 9.8595, lng: 126.1870 },
+    highlight: false,
+  },
+  {
+    name: 'Roots',
+    zone: 'General Luna',
+    price: '₱₱₱',
+    priceLevel: 3,
+    cuisine: 'Healthy · Organic',
+    desc: 'The go-to for health-conscious travelers. Excellent smoothie bowls, plant-based dishes, and fresh juices. Beautiful open-air space.',
+    specialty: 'Smoothie bowls',
+    coord: { lat: 9.8620, lng: 126.1845 },
+    highlight: false,
+  },
+  {
+    name: 'Hapag',
+    zone: 'General Luna',
+    price: '₱₱',
+    priceLevel: 2,
+    cuisine: 'Filipino · Comfort',
+    desc: 'Authentic Filipino home cooking — the kind that tastes like it was made by someone\'s grandmother. Affordable and satisfying.',
+    specialty: 'Kare-kare & sinigang',
+    coord: { lat: 9.8590, lng: 126.1880 },
+    highlight: false,
+  },
+  {
+    name: 'Cev',
+    zone: 'General Luna',
+    price: '₱₱',
+    priceLevel: 2,
+    cuisine: 'Ceviche · Seafood',
+    desc: 'The island\'s best ceviche bar. Fresh catch of the day, citrus-marinated, with a cocktail. Perfect lunch spot.',
+    specialty: 'Classic ceviche',
+    coord: { lat: 9.8615, lng: 126.1840 },
+    highlight: false,
+  },
+  {
+    name: 'Amore',
+    zone: 'General Luna',
+    price: '₱₱',
+    priceLevel: 2,
+    cuisine: 'Italian · Pizza',
+    desc: 'Proper wood-fired pizza on a tropical island. The pastas are excellent too. Great for groups and families.',
+    specialty: 'Truffle pizza',
+    coord: { lat: 9.8600, lng: 126.1890 },
+    highlight: false,
+  },
+  {
+    name: 'Lamari',
+    zone: 'General Luna',
+    price: '₱₱',
+    priceLevel: 2,
+    cuisine: 'Seafood · Local',
+    desc: 'No-frills fresh seafood. Choose your fish, choose your cooking style. The freshest catches at honest prices.',
+    specialty: 'Grilled tuna',
+    coord: { lat: 9.8580, lng: 126.1895 },
+    highlight: false,
+  },
+  {
+    name: 'Nami / Drunken Sushi',
+    zone: 'General Luna',
+    price: '₱₱',
+    priceLevel: 2,
+    cuisine: 'Japanese · Sushi',
+    desc: 'Surprisingly good sushi for an island this remote. Popular with the expat crowd. Lively atmosphere at night.',
+    specialty: 'Dragon roll',
+    coord: { lat: 9.8625, lng: 126.1835 },
+    highlight: false,
+  },
+  {
+    name: 'White Beard',
+    zone: 'General Luna',
+    price: '₱₱',
+    priceLevel: 2,
+    cuisine: 'Bar · Bites',
+    desc: 'The spot for sundowners and casual food. Great cocktails, relaxed vibe, good music. More bar than restaurant but the food slaps.',
+    specialty: 'Cocktails & nachos',
+    coord: { lat: 9.8630, lng: 126.1850 },
+    highlight: false,
+  },
+  {
+    name: 'La Mesa',
+    zone: 'General Luna',
+    price: '₱₱',
+    priceLevel: 2,
+    cuisine: 'Filipino · Contemporary',
+    desc: 'Modern Filipino cuisine with a fresh twist. Consistently good, good portions, fair prices.',
+    specialty: 'Lechon kawali',
+    coord: { lat: 9.8585, lng: 126.1900 },
+    highlight: false,
+  },
+  {
+    name: 'Backside Burger',
+    zone: 'Cloud 9',
+    price: '₱₱',
+    priceLevel: 2,
+    cuisine: 'Burgers · Casual',
+    desc: 'Post-surf burgers at the Cloud 9 boardwalk. Smash burgers, cold beers, great views of the break. The classic surfer lunch.',
+    specialty: 'Double smash burger',
+    coord: { lat: 9.8130, lng: 126.1745 },
+    highlight: false,
+  },
+  {
+    name: 'El Chapo',
+    zone: 'General Luna',
+    price: '₱₱',
+    priceLevel: 2,
+    cuisine: 'Mexican · Tacos',
+    desc: 'The island\'s taco spot. Generous portions, bold flavors, cold Modelo. Simple, fun, and always packed at dinner.',
+    specialty: 'Fish tacos',
+    coord: { lat: 9.8608, lng: 126.1865 },
+    highlight: false,
+  },
+  {
+    name: 'Las Baricass',
+    zone: 'General Luna',
+    price: '₱₱',
+    priceLevel: 2,
+    cuisine: 'Beach Bar · Tapas',
+    desc: 'Beach bar with Spanish-inspired tapas. Great for afternoon sessions — sangria, patatas bravas, ocean breeze.',
+    specialty: 'Sangria & tapas',
+    coord: { lat: 9.8640, lng: 126.1820 },
+    highlight: false,
+  },
+  {
+    name: 'CFC',
+    zone: 'General Luna',
+    price: '₱',
+    priceLevel: 1,
+    cuisine: 'Fried Chicken · Local',
+    desc: 'Siargao Fried Chicken — the island institution. Crispy, cheap, and deeply satisfying. Every local eats here.',
+    specialty: 'Chicken combo meal',
+    coord: { lat: 9.8570, lng: 126.1910 },
+    highlight: false,
+  },
 ];
 
 const MONTHS = [
-  { m:'Jan', w:'☀️', crowd:'High',     price:3200, stars:4 },
-  { m:'Feb', w:'☀️', crowd:'Medium',   price:2800, stars:5 },
-  { m:'Mar', w:'☀️', crowd:'Medium',   price:2600, stars:5 },
-  { m:'Apr', w:'☀️', crowd:'Low',      price:2400, stars:4 },
-  { m:'May', w:'🌤', crowd:'Low',      price:2200, stars:3 },
-  { m:'Jun', w:'🌧', crowd:'Low',      price:1900, stars:2 },
-  { m:'Jul', w:'🌧', crowd:'Low',      price:1850, stars:2 },
-  { m:'Aug', w:'🌧', crowd:'Low',      price:1900, stars:2 },
-  { m:'Sep', w:'⛈', crowd:'Very low', price:1800, stars:1 },
-  { m:'Oct', w:'🌊', crowd:'High',     price:3500, stars:5 },
-  { m:'Nov', w:'🌊', crowd:'Medium',   price:2900, stars:4 },
-  { m:'Dec', w:'☀️', crowd:'Very high',price:4200, stars:3 },
+  { m:'Jan', w:'☀️', crowd:'High',     price:3100, stars:4 },
+  { m:'Feb', w:'☀️', crowd:'Medium',   price:2650, stars:5 },
+  { m:'Mar', w:'☀️', crowd:'Medium',   price:2450, stars:5 },
+  { m:'Apr', w:'☀️', crowd:'Low',      price:2200, stars:4 },
+  { m:'May', w:'🌤', crowd:'Low',      price:1990, stars:3 },
+  { m:'Jun', w:'🌧', crowd:'Low',      price:1850, stars:2 },
+  { m:'Jul', w:'🌧', crowd:'Low',      price:1780, stars:2 },
+  { m:'Aug', w:'🌧', crowd:'Low',      price:1820, stars:2 },
+  { m:'Sep', w:'⛈', crowd:'Very low', price:1750, stars:1 },
+  { m:'Oct', w:'🌊', crowd:'High',     price:3400, stars:5 },
+  { m:'Nov', w:'🌊', crowd:'Medium',   price:2800, stars:4 },
+  { m:'Dec', w:'☀️', crowd:'Very high',price:4100, stars:3 },
+];
+
+const BUDGETS = [
+  { emoji:'🎒', tier:'Backpacker', range:'₱1,500–2,500/day', items:['Flights from ₱1,780 (best deal)','Hostel dorm ₱400–700/night','CFC or local carinderia ₱150–250/meal','Motorbike rental ₱400–600/day','Island hopping shared tour ₱800'] },
+  { emoji:'🏄', tier:'Mid-range', range:'₱3,000–6,000/day', items:['Flights from ₱1,990','Guesthouse or surf resort ₱1,500–3,000/night','Hapag, Cev, or Amore ₱400–800/meal','Surf lessons ₱600–1,200','Private island hopping ₱2,500'] },
+  { emoji:'🌴', tier:'Comfort', range:'₱8,000+/day', items:['Flights RT from ₱3,800','Boutique resort ₱4,000–10,000/night','Alma, Ferns, or Roots ₱1,000–2,000/meal','Private speedboat tour ₱5,000+','Yoga retreat or spa'] },
 ];
 
 const TIPS = [
   { icon:'🔔', text:'Set a price alert — Siargao deals drop fast and disappear in hours' },
   { icon:'✈️', text:'Book Sunlight Air at least 3 weeks ahead — the most popular carrier, fills fast' },
-  { icon:'🌊', text:'October = surf competition month. Book 2–3 months early, prices spike' },
-  { icon:'🛵', text:'Rent a motorbike on the island — it\'s the best way to explore beyond General Luna' },
-  { icon:'📅', text:'Low season (Jun–Aug) has the cheapest flights but expect rain in the afternoons' },
-  { icon:'💸', text:'Roundtrip is usually cheaper than two one-ways. Always check both' },
-];
-
-const BUDGETS = [
-  { emoji:'🎒', tier:'Backpacker', range:'₱1,500–2,500/day', items:['Flights from ₱1,850 (Cebu direct)','Hostel dorm ₱400–700/night','Local eateries ₱150–300/meal','Motorbike rental ₱400–600/day'] },
-  { emoji:'🏄', tier:'Mid-range', range:'₱3,000–6,000/day', items:['Flights from ₱2,100','Guesthouse ₱1,500–3,000/night','Mix of local & tourist restaurants','Surf lessons ₱600–1,200'] },
-  { emoji:'🌴', tier:'Comfort', range:'₱8,000+/day', items:['Flights RT ₱4,000–6,000','Boutique resort ₱4,000–10,000/night','Private island tours','Yoga retreats & spa'] },
+  { icon:'🌊', text:'October = surf competition month. Book 2–3 months early, prices spike to ₱3,400+' },
+  { icon:'🛵', text:'Rent a motorbike on the island — essential for exploring beyond General Luna (₱400–600/day)' },
+  { icon:'🌙', text:'Go to Sugba Lagoon first thing in the morning — by noon it gets crowded' },
+  { icon:'📅', text:'Low season (Jun–Aug) has flights from ₱1,750 but expect afternoon rain' },
+  { icon:'💸', text:'Roundtrip is usually cheaper than two one-ways. Always check both directions' },
+  { icon:'🧭', text:'Hire a local guide for Beto Cold Spring and North Siargao — roads are unmarked' },
+  { icon:'🌿', text:'Maasin River is best at high tide — check local tide charts before going' },
 ];
 
 function getMonthBg(stars: number) {
@@ -57,15 +314,104 @@ function getMonthBg(stars: number) {
   return { bg: 'var(--coral-light)', border: 'rgba(224,78,56,0.3)' };
 }
 
+function formatPrice(p: number) {
+  return p.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}
+
+const PRICE_COLORS: Record<number, { bg: string, color: string, label: string }> = {
+  1: { bg: '#E8F5E9', color: '#2E7D32', label: 'Budget' },
+  2: { bg: 'var(--seafoam)', color: 'var(--lagoon)', label: 'Mid-range' },
+  3: { bg: 'var(--golden-light)', color: '#7A5A00', label: 'Upscale' },
+};
+
+// ============================================================
+// COMPOSANT MAP
+// ============================================================
+
+declare global {
+  interface Window { google: any; initMap: () => void; }
+}
+
+function SiargaoMap({ filter }: { filter: number | 'all' }) {
+  useEffect(() => {
+    const initMap = () => {
+      if (!window.google) return;
+      const map = new window.google.maps.Map(document.getElementById('siargao-map'), {
+        center: { lat: 9.87, lng: 126.16 },
+        zoom: 13,
+        styles: [
+          { featureType: 'poi', stylers: [{ visibility: 'off' }] },
+          { featureType: 'transit', stylers: [{ visibility: 'off' }] },
+          { elementType: 'geometry', stylers: [{ color: '#f5f5f5' }] },
+          { elementType: 'labels.icon', stylers: [{ visibility: 'off' }] },
+          { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#c9d8e8' }] },
+          { featureType: 'road', elementType: 'geometry', stylers: [{ color: '#ffffff' }] },
+        ],
+        mapTypeControl: false,
+        streetViewControl: false,
+        fullscreenControl: false,
+      });
+
+      const visible = filter === 'all'
+        ? RESTAURANTS
+        : RESTAURANTS.filter(r => r.priceLevel === filter);
+
+      visible.forEach(r => {
+        const pc = PRICE_COLORS[r.priceLevel];
+        const marker = new window.google.maps.Marker({
+          position: r.coord,
+          map,
+          title: r.name,
+          icon: {
+            path: window.google.maps.SymbolPath.CIRCLE,
+            scale: r.highlight ? 10 : 8,
+            fillColor: r.highlight ? '#E8B44A' : pc.color,
+            fillOpacity: 1,
+            strokeColor: 'white',
+            strokeWeight: 2,
+          },
+        });
+
+        const infoWindow = new window.google.maps.InfoWindow({
+          content: `
+            <div style="font-family:Syne,sans-serif;padding:8px;min-width:160px">
+              <p style="font-weight:800;font-size:14px;margin:0 0 4px;color:#071315">${r.name}${r.highlight ? ' ⭐' : ''}</p>
+              <p style="font-size:12px;color:#4A9080;margin:0 0 2px">${r.cuisine}</p>
+              <p style="font-size:13px;font-weight:800;color:${pc.color};margin:0">${r.price}</p>
+            </div>
+          `,
+        });
+
+        marker.addListener('click', () => infoWindow.open(map, marker));
+      });
+    };
+
+    if (window.google) {
+      initMap();
+    } else {
+      window.initMap = initMap;
+    }
+  }, [filter]);
+
+  return (
+    <div id="siargao-map" style={{ width: '100%', height: 420, borderRadius: 12, border: '1px solid var(--border)' }} />
+  );
+}
+
+// ============================================================
+// PAGE PRINCIPALE
+// ============================================================
+
 export default function GuidePage() {
   const [activeTab, setActiveTab] = useState('overview');
+  const [mapFilter, setMapFilter] = useState<number | 'all'>('all');
 
   useEffect(() => {
     const handleScroll = () => {
       const offsets = TABS.map(tab => {
         const el = document.getElementById(tab.id);
         if (!el) return { id: tab.id, top: Infinity };
-        return { id: tab.id, top: Math.abs(el.getBoundingClientRect().top - 130) };
+        return { id: tab.id, top: Math.abs(el.getBoundingClientRect().top - 140) };
       });
       const closest = offsets.reduce((a, b) => a.top < b.top ? a : b);
       setActiveTab(closest.id);
@@ -82,6 +428,12 @@ export default function GuidePage() {
 
   return (
     <div>
+      {/* Google Maps Script */}
+      <Script
+        src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY}&callback=initMap`}
+        strategy="lazyOnload"
+      />
+
       {/* HEADER */}
       <div style={{ background: 'var(--nightsurf)', padding: '56px 40px 48px' }}>
         <div style={{ maxWidth: 860, margin: '0 auto' }}>
@@ -116,21 +468,21 @@ export default function GuidePage() {
 
       {/* CONTENT */}
       <div style={{ background: 'var(--seafoam)' }}>
-        <div style={{ maxWidth: 1000, margin: '0 auto', padding: '0 40px' }}>
+        <div style={{ maxWidth: 1060, margin: '0 auto', padding: '0 40px' }}>
 
           {/* OVERVIEW */}
           <section id="overview" style={{ paddingTop: 56, paddingBottom: 48, scrollMarginTop: 130 }}>
-            <h2 style={{ fontFamily: 'Syne', fontWeight: 800, fontSize: 28, color: 'var(--nightsurf)', marginBottom: 16 }}>Overview</h2>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+            <h2 style={{ fontFamily: 'Syne', fontWeight: 800, fontSize: 28, color: 'var(--nightsurf)', marginBottom: 20 }}>Overview</h2>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 14 }}>
               {[
                 { label: 'Location', value: 'Surigao del Norte, Philippines' },
                 { label: 'Airport', value: 'Sayak Airport (IAO)' },
-                { label: 'Best known for', value: 'Cloud 9 surf break, island life' },
+                { label: 'Best known for', value: 'Cloud 9, surf, island life' },
                 { label: 'Best months', value: 'February–April, October' },
               ].map((item, i) => (
-                <div key={i} style={{ background: 'white', border: '1px solid var(--border)', borderRadius: 12, padding: '20px 24px' }}>
-                  <p style={{ fontFamily: 'Syne', fontWeight: 400, fontSize: 11, color: 'var(--lagoon-muted)', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 6 }}>{item.label}</p>
-                  <p style={{ fontFamily: 'Syne', fontWeight: 600, fontSize: 16, color: 'var(--nightsurf)' }}>{item.value}</p>
+                <div key={i} style={{ background: 'white', border: '1px solid var(--border)', borderRadius: 12, padding: '20px 22px' }}>
+                  <p style={{ fontFamily: 'Syne', fontWeight: 400, fontSize: 10, color: 'var(--lagoon-muted)', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 6 }}>{item.label}</p>
+                  <p style={{ fontFamily: 'Syne', fontWeight: 700, fontSize: 15, color: 'var(--nightsurf)' }}>{item.value}</p>
                 </div>
               ))}
             </div>
@@ -142,19 +494,19 @@ export default function GuidePage() {
             <p style={{ fontFamily: 'Syne', fontWeight: 400, fontSize: 14, color: 'var(--lagoon-muted)', marginBottom: 24 }}>All routes to Siargao explained.</p>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
               {[
-                { from: 'From Cebu', best: 'Sunlight Air direct — 55 min — from ₱1,850', alt: 'Multiple daily departures available', tip: 'Cebu is the easiest gateway. Book Sunlight Air early for the best prices.', code: 'CEB' },
-                { from: 'From Manila', best: 'Fly to Cebu first, then connect to Siargao (~4h total)', alt: 'Note: PAL moved direct MNL flights to Clark in 2025', tip: 'Via Cebu is often faster and cheaper than a direct route.', code: 'MNL' },
-                { from: 'From Davao', best: 'Connect via Cebu — check availability', alt: 'Limited direct options from Davao', tip: 'Book well in advance — connections fill fast.', code: 'DVO' },
+                { from: 'From Cebu', best: 'Sunlight Air direct — 55 min — from ₱1,780', alt: 'Multiple daily departures. The easiest and cheapest gateway.', tip: 'Book at least 3 weeks ahead. Morning flights are usually cheapest.', code: 'CEB' },
+                { from: 'From Manila', best: 'Fly Cebu Pacific to Cebu, then Sunlight Air to Siargao (~4h total)', alt: 'PAL moved direct MNL–IAO flights to Clark Airport in 2025.', tip: 'Via Cebu is almost always faster and cheaper than a direct route.', code: 'MNL' },
+                { from: 'From Davao', best: 'Connect via Cebu — check Sunlight Air availability', alt: 'Limited direct options from Davao to Siargao.', tip: 'Book the Cebu leg first, then add the Siargao leg.', code: 'DVO' },
               ].map((r, i) => (
                 <div key={i} style={{ background: 'white', border: '1px solid var(--border)', borderRadius: 12, padding: 24 }}>
-                  <p style={{ fontFamily: 'Syne', fontWeight: 800, fontSize: 16, color: 'var(--nightsurf)', marginBottom: 8 }}>{r.from}</p>
-                  <p style={{ fontFamily: 'Syne', fontWeight: 600, fontSize: 14, color: 'var(--lagoon)', marginBottom: 4 }}>✅ Best: {r.best}</p>
+                  <p style={{ fontFamily: 'Syne', fontWeight: 800, fontSize: 17, color: 'var(--nightsurf)', marginBottom: 8 }}>{r.from}</p>
+                  <p style={{ fontFamily: 'Syne', fontWeight: 600, fontSize: 14, color: 'var(--lagoon)', marginBottom: 4 }}>✅ {r.best}</p>
                   <p style={{ fontFamily: 'Syne', fontWeight: 400, fontSize: 13, color: 'var(--lagoon-muted)', marginBottom: 12 }}>{r.alt}</p>
                   <div style={{ background: 'var(--seafoam)', borderRadius: 8, padding: '10px 14px', marginBottom: 16 }}>
                     <p style={{ fontFamily: 'Syne', fontWeight: 400, fontSize: 13, color: 'var(--lagoon)' }}>💡 SAGAS tip: {r.tip}</p>
                   </div>
                   <Link href={`/flights?from=${r.code}`} style={{ background: 'var(--lagoon)', color: 'white', borderRadius: 8, padding: '10px 20px', fontFamily: 'Syne', fontWeight: 800, fontSize: 12, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-                    Search {r.from.replace('From ','')}→IAO flights <ChevronRight size={14}/>
+                    Search {r.from.replace('From ', '')}→IAO <ChevronRight size={14}/>
                   </Link>
                 </div>
               ))}
@@ -174,7 +526,7 @@ export default function GuidePage() {
                       <p style={{ fontFamily: 'Syne', fontWeight: 800, fontSize: 14, color: 'var(--nightsurf)' }}>{mo.m}</p>
                       <span style={{ fontSize: 16 }}>{mo.w}</span>
                     </div>
-                    <p style={{ fontFamily: 'Syne', fontWeight: 800, fontSize: 15, color: 'var(--lagoon)', marginBottom: 2 }}>₱{mo.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</p>
+                    <p style={{ fontFamily: 'Syne', fontWeight: 800, fontSize: 16, color: 'var(--lagoon)', marginBottom: 2 }}>₱{formatPrice(mo.price)}</p>
                     <p style={{ fontFamily: 'Syne', fontWeight: 400, fontSize: 11, color: 'var(--lagoon-muted)' }}>{mo.crowd} crowds</p>
                     <p style={{ fontSize: 12, marginTop: 4 }}>{'⭐'.repeat(mo.stars)}</p>
                   </div>
@@ -183,7 +535,7 @@ export default function GuidePage() {
             </div>
             <div style={{ background: 'var(--golden-light)', border: '1px solid rgba(232,180,74,0.4)', borderRadius: 12, padding: '18px 22px' }}>
               <p style={{ fontFamily: 'Syne', fontWeight: 400, fontSize: 14, color: '#7A5A00', lineHeight: 1.6 }}>
-                💡 <strong>Best time:</strong> February to April. Reliably dry, fewer crowds, flights 30–40% cheaper than December peak.
+                💡 <strong>Best time:</strong> February to April. Reliably dry, fewer crowds, flights from ₱1,990 — 35–45% cheaper than December peak.
               </p>
             </div>
           </section>
@@ -191,25 +543,88 @@ export default function GuidePage() {
           {/* ISLAND ZONES */}
           <section id="island-zones" style={{ paddingTop: 8, paddingBottom: 48, scrollMarginTop: 130 }}>
             <h2 style={{ fontFamily: 'Syne', fontWeight: 800, fontSize: 28, color: 'var(--nightsurf)', marginBottom: 8 }}>Island zones</h2>
-            <p style={{ fontFamily: 'Syne', fontWeight: 400, fontSize: 14, color: 'var(--lagoon-muted)', marginBottom: 24 }}>Siargao has distinct areas — each with its own vibe.</p>
+            <p style={{ fontFamily: 'Syne', fontWeight: 400, fontSize: 14, color: 'var(--lagoon-muted)', marginBottom: 24 }}>7 distinct areas — each with its own vibe.</p>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
               {ZONES.map((z, i) => (
                 <div key={i} style={{ background: 'white', border: '1px solid var(--border)', borderRadius: 12, overflow: 'hidden' }}>
-                  <img src={z.img} alt={z.name} style={{ width: '100%', height: 180, objectFit: 'cover', display: 'block' }} />
-                  <div style={{ padding: 20 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
-                      <div style={{ width: 34, height: 34, background: z.iconBg, borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <img src={z.img} alt={z.name} style={{ width: '100%', height: 200, objectFit: 'cover', display: 'block' }} />
+                  <div style={{ padding: 22 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10, flexWrap: 'wrap' }}>
+                      <div style={{ width: 34, height: 34, background: z.iconBg, borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                         <z.icon size={16} color={z.iconColor} />
                       </div>
-                      <p style={{ fontFamily: 'Syne', fontWeight: 800, fontSize: 16, color: 'var(--nightsurf)' }}>{z.name}</p>
+                      <p style={{ fontFamily: 'Syne', fontWeight: 800, fontSize: 17, color: 'var(--nightsurf)' }}>{z.name}</p>
                       <span style={{ background: z.tagBg, color: z.tagColor, borderRadius: 20, padding: '4px 10px', fontFamily: 'Syne', fontWeight: 600, fontSize: 11 }}>{z.tag}</span>
                     </div>
-                    <p style={{ fontFamily: 'Syne', fontWeight: 400, fontSize: 13, color: 'var(--lagoon-muted)', lineHeight: 1.6, marginBottom: 8 }}>{z.desc}</p>
-                    <p style={{ fontFamily: 'Syne', fontWeight: 400, fontSize: 12, color: 'var(--lagoon)', fontStyle: 'italic', marginBottom: 4 }}>"{z.vibe}"</p>
-                    <p style={{ fontFamily: 'Syne', fontWeight: 600, fontSize: 11, color: 'var(--lagoon-muted)' }}>Best for: {z.best}</p>
+                    <p style={{ fontFamily: 'Syne', fontWeight: 400, fontSize: 13, color: 'var(--lagoon-muted)', lineHeight: 1.7, marginBottom: 10 }}>{z.desc}</p>
+                    <p style={{ fontFamily: 'Syne', fontWeight: 400, fontSize: 12, color: 'var(--lagoon)', fontStyle: 'italic', marginBottom: 6 }}>"{z.vibe}"</p>
+                    <p style={{ fontFamily: 'Syne', fontWeight: 600, fontSize: 11, color: 'var(--lagoon-muted)' }}>📅 Best for: {z.best}</p>
                   </div>
                 </div>
               ))}
+            </div>
+          </section>
+
+          {/* RESTAURANTS */}
+          <section id="restaurants" style={{ paddingTop: 8, paddingBottom: 48, scrollMarginTop: 130 }}>
+            <h2 style={{ fontFamily: 'Syne', fontWeight: 800, fontSize: 28, color: 'var(--nightsurf)', marginBottom: 8 }}>Restaurants</h2>
+            <p style={{ fontFamily: 'Syne', fontWeight: 400, fontSize: 14, color: 'var(--lagoon-muted)', marginBottom: 24 }}>15 restaurants picked by the SAGAS team — locals who actually eat here.</p>
+
+            {/* MAP */}
+            <div style={{ marginBottom: 24 }}>
+              <div style={{ display: 'flex', gap: 8, marginBottom: 14, flexWrap: 'wrap' }}>
+                <p style={{ fontFamily: 'Syne', fontWeight: 600, fontSize: 12, color: 'var(--lagoon-muted)', alignSelf: 'center', marginRight: 4 }}>Filter map:</p>
+                {([['all', 'All restaurants'], [1, '₱ Budget'], [2, '₱₱ Mid-range'], [3, '₱₱₱ Upscale']] as const).map(([v, l]) => (
+                  <button key={String(v)} onClick={() => setMapFilter(v)} style={{
+                    background: mapFilter === v ? 'var(--lagoon)' : 'white',
+                    color: mapFilter === v ? 'white' : 'var(--lagoon-muted)',
+                    border: `1px solid ${mapFilter === v ? 'var(--lagoon)' : 'var(--border)'}`,
+                    borderRadius: 20, padding: '6px 16px',
+                    fontFamily: 'Syne', fontWeight: mapFilter === v ? 600 : 400, fontSize: 12,
+                    cursor: 'pointer',
+                  }}>
+                    {l}
+                  </button>
+                ))}
+              </div>
+              <SiargaoMap filter={mapFilter} />
+              <p style={{ fontFamily: 'Syne', fontWeight: 400, fontSize: 11, color: 'var(--lagoon-muted)', marginTop: 8 }}>
+                ⭐ Gold dot = SAGAS team favorite · Click any marker for details
+              </p>
+            </div>
+
+            {/* RESTAURANT LIST */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 14 }}>
+              {RESTAURANTS.map((r, i) => {
+                const pc = PRICE_COLORS[r.priceLevel];
+                return (
+                  <div key={i} style={{
+                    background: 'white',
+                    border: r.highlight ? '2px solid var(--golden)' : '1px solid var(--border)',
+                    borderRadius: 12, padding: 20,
+                    position: 'relative',
+                  }}>
+                    {r.highlight && (
+                      <span style={{ position: 'absolute', top: 12, right: 12, background: 'var(--golden)', color: 'white', borderRadius: 20, padding: '3px 10px', fontFamily: 'Syne', fontWeight: 800, fontSize: 10 }}>
+                        ⭐ TEAM FAV
+                      </span>
+                    )}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+                      <MapPin size={14} color="var(--lagoon-muted)" />
+                      <p style={{ fontFamily: 'Syne', fontWeight: 400, fontSize: 11, color: 'var(--lagoon-muted)' }}>{r.zone}</p>
+                    </div>
+                    <p style={{ fontFamily: 'Syne', fontWeight: 800, fontSize: 16, color: 'var(--nightsurf)', marginBottom: 4 }}>{r.name}</p>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
+                      <span style={{ background: pc.bg, color: pc.color, borderRadius: 20, padding: '3px 10px', fontFamily: 'Syne', fontWeight: 800, fontSize: 12 }}>{r.price}</span>
+                      <span style={{ fontFamily: 'Syne', fontWeight: 400, fontSize: 12, color: 'var(--lagoon-muted)' }}>{r.cuisine}</span>
+                    </div>
+                    <p style={{ fontFamily: 'Syne', fontWeight: 400, fontSize: 13, color: 'var(--lagoon-muted)', lineHeight: 1.6, marginBottom: 8 }}>{r.desc}</p>
+                    {r.specialty && (
+                      <p style={{ fontFamily: 'Syne', fontWeight: 600, fontSize: 12, color: 'var(--lagoon)' }}>🍽 Must order: {r.specialty}</p>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           </section>
 
@@ -225,8 +640,8 @@ export default function GuidePage() {
                   <p style={{ fontFamily: 'Syne', fontWeight: 800, fontSize: 14, color: 'var(--lagoon)', marginBottom: 16 }}>{b.range}</p>
                   <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: 8 }}>
                     {b.items.map((item, j) => (
-                      <li key={j} style={{ fontFamily: 'Syne', fontWeight: 400, fontSize: 13, color: 'var(--lagoon-muted)', display: 'flex', alignItems: 'flex-start', gap: 8 }}>
-                        <span style={{ color: 'var(--lagoon)', fontWeight: 800, flexShrink: 0 }}>·</span>{item}
+                      <li key={j} style={{ fontFamily: 'Syne', fontWeight: 400, fontSize: 13, color: 'var(--lagoon-muted)', display: 'flex', gap: 8 }}>
+                        <span style={{ color: 'var(--lagoon)', fontWeight: 800 }}>·</span>{item}
                       </li>
                     ))}
                   </ul>
