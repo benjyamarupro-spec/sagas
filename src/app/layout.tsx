@@ -1,26 +1,21 @@
-import type { Metadata } from "next";
-import { Syne } from "next/font/google";
-import "./globals.css";
-
-const syne = Syne({
-  variable: "--font-syne",
-  subsets: ["latin"],
-  weight: ["400", "600", "800"],
-});
+import type { Metadata } from 'next';
+import './globals.css';
+import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
 
 export const metadata: Metadata = {
-  title: "SAGAS",
-  description: "Vols vers Siargao Island, Philippines",
+  title: 'SAGAS — Flights to Siargao | Best Deals & Routes',
+  description: 'Compare every Sunlight Air flight to Siargao. Best prices, direct routes from Cebu. The #1 Siargao flight platform.',
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="fr" className={`${syne.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col">{children}</body>
+    <html lang="en">
+      <body>
+        <Navbar />
+        <main>{children}</main>
+        <Footer />
+      </body>
     </html>
   );
 }
