@@ -1,7 +1,8 @@
 'use client';
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import { PlaneLanding, Search, Filter } from 'lucide-react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 
 const ALL_FLIGHTS = [
   // CEB → IAO
@@ -22,11 +23,13 @@ const ALL_FLIGHTS = [
   { id:12, from:'IAO', fromCity:'Siargao', to:'CRK', toCity:'Clark (Angeles)', depart:'16:00', arrive:'18:30', duration:'2h 30min', price:4500, badge:null, badgeType:null },
 ];
 
-export default function FlightsPage() {
+function FlightsContent() {
+  const searchParams = useSearchParams();
+  const initialRoute = searchParams.get('routeFilter') || 'all';
   const [maxPrice, setMaxPrice] = useState(5000);
   const [sortBy, setSortBy] = useState('cheapest');
   const [timeFilter, setTimeFilter] = useState('all');
-  const [routeFilter, setRouteFilter] = useState('all');
+  const [routeFilter, setRouteFilter] = useState(initialRoute);
 
   const filtered = ALL_FLIGHTS
     .filter(f => f.price <= maxPrice)
@@ -161,5 +164,13 @@ export default function FlightsPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function FlightsPage() {
+  return (
+    <Suspense fallback={<div style={{padding:40}}>Loading...</div>}>
+      <FlightsContent />
+    </Suspense>
   );
 }

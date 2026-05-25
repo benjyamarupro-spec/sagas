@@ -138,7 +138,7 @@ export default function RoutesPage() {
                       <p style={{ fontFamily: 'Syne', fontWeight: 600, fontSize: 18, color: 'var(--lagoon-muted)' }}>₱{route.avgPrice.toLocaleString()}</p>
                     </div>
                   </div>
-                  <Link href={`/flights?from=${route.fromCode}`} style={{
+                  <Link href={`/flights?from=${route.fromCode}&to=${route.toCode}&routeFilter=${route.fromCode === 'CRK' || route.toCode === 'CRK' ? 'crk' : 'ceb'}`} style={{
                     background: 'var(--lagoon)', color: 'white', borderRadius: 8,
                     padding: '14px 28px', fontFamily: 'Syne', fontWeight: 800, fontSize: 13,
                     textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 6,

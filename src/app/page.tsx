@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { PlaneLanding, PlaneTakeoff, Lock, Search, Bell, ChevronRight, Waves, Music, Trees, Droplets, BookOpen, Calendar } from 'lucide-react';
@@ -40,9 +40,9 @@ const VIBES = [
 ];
 
 const CITIES = [
-  { label: 'Cebu', code: 'CEB', sub: 'Mactan-Cebu International' },
-  { label: 'Clark (Angeles)', code: 'CRK', sub: 'Clark International Airport · ~2h from Manila' },
-  { label: 'Siargao', code: 'IAO', sub: 'Sayak Airport (return flight)' },
+  { label: 'Cebu', code: 'CEB', sub: 'Mactan-Cebu International Airport' },
+  { label: 'Clark (Angeles)', code: 'CRK', sub: 'Clark International Airport · 2h from Manila' },
+  { label: 'Siargao (return)', code: 'IAO', sub: 'Sayak Airport' },
 ];
 
 // --- DEAL CARD ---
@@ -103,17 +103,13 @@ export default function HomePage() {
   const [departDate, setDepartDate] = useState('');
   const [returnDate, setReturnDate] = useState('');
   const [pax, setPax] = useState('2 adults · Economy');
-  const cityRef = useRef<HTMLDivElement>(null);
+  const today = new Date().toISOString().split('T')[0];
 
   useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (cityRef.current && !cityRef.current.contains(e.target as Node)) {
-        setShowCityDropdown(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+    const close = () => setShowCityDropdown(false);
+    if (showCityDropdown) document.addEventListener('click', close);
+    return () => document.removeEventListener('click', close);
+  }, [showCityDropdown]);
 
   const handleSearch = () => {
     router.push(`/flights?direction=${direction}&from=${selectedCity || 'CEB'}&depart=${departDate}&return=${returnDate}`);
@@ -176,53 +172,65 @@ export default function HomePage() {
                 <p style={{ fontFamily: 'Syne', fontWeight: 400, fontSize: 10, color: 'var(--lagoon-muted)', fontStyle: 'italic' }}>Always Siargao</p>
               </div>
 
-              {/* City Field */}
+              {/* CITY FIELD */}
               <div
-                style={{ padding: '14px 16px', borderRight: '1px solid var(--border)', position: 'relative' }}
-                ref={cityRef}
+                style={{ padding: '14px 16px', borderRight: '1px solid var(--border)', position: 'relative', cursor: 'pointer' }}
+                onClick={() => setShowCityDropdown(prev => !prev)}
               >
-                <p style={{ fontFamily: 'Syne', fontWeight: 400, fontSize: 10, color: 'var(--lagoon-muted)', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 4 }}>
+                <p style={{
+                  fontFamily: 'Syne', fontWeight: 400, fontSize: 10,
+                  color: 'var(--lagoon-muted)', textTransform: 'uppercase',
+                  letterSpacing: 1, marginBottom: 4, pointerEvents: 'none'
+                }}>
                   {direction === 'to' ? 'Flying from' : 'Flying to'}
                 </p>
-                <button
-                  onMouseDown={(e) => { e.preventDefault(); setShowCityDropdown(!showCityDropdown); }}
-                  style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, textAlign: 'left', width: '100%' }}
-                >
-                  <p style={{ fontFamily: 'Syne', fontWeight: selectedCity ? 800 : 400, fontSize: selectedCity ? 15 : 14, color: selectedCity ? 'var(--nightsurf)' : 'var(--lagoon-muted)' }}>
-                    {selectedCity ? CITIES.find(c => c.code === selectedCity)?.label : 'Choose a city...'}
+                <p style={{
+                  fontFamily: 'Syne',
+                  fontWeight: selectedCity ? 700 : 400,
+                  fontSize: 14,
+                  color: selectedCity ? 'var(--nightsurf)' : 'var(--lagoon-muted)',
+                  pointerEvents: 'none', margin: 0
+                }}>
+                  {selectedCity
+                    ? `${CITIES.find(c => c.code === selectedCity)?.label} (${selectedCity})`
+                    : 'Choose a city...'}
+                </p>
+                {!selectedCity && (
+                  <p style={{ fontFamily: 'Syne', fontSize: 11, color: 'var(--lagoon-muted)', margin: 0, pointerEvents: 'none' }}>
+                    Cebu · Clark
                   </p>
-                  {!selectedCity && <p style={{ fontFamily: 'Syne', fontSize: 11, color: 'var(--lagoon-muted)' }}>Cebu · Clark · Siargao</p>}
-                </button>
+                )}
+
                 {showCityDropdown && (
-                  <div style={{
-                    position: 'absolute', top: '100%', left: 0, right: 0,
-                    background: 'white', border: '1px solid var(--border)',
-                    borderRadius: 10, zIndex: 200,
-                    boxShadow: '0 8px 32px rgba(0,0,0,0.12)',
-                    overflow: 'hidden',
-                  }}>
+                  <div
+                    style={{
+                      position: 'absolute', top: '100%', left: 0,
+                      minWidth: 260, background: 'white',
+                      border: '1px solid var(--border)', borderRadius: 10,
+                      zIndex: 300, boxShadow: '0 8px 32px rgba(0,0,0,0.12)',
+                      overflow: 'hidden',
+                    }}
+                    onClick={e => e.stopPropagation()}
+                  >
                     {CITIES.map(c => (
-                      <button
+                      <div
                         key={c.code}
-                        onMouseDown={(e) => {
-                          e.preventDefault();
-                          setSelectedCity(c.code);
-                          setShowCityDropdown(false);
-                        }}
+                        onClick={() => { setSelectedCity(c.code); setShowCityDropdown(false); }}
                         style={{
-                          display: 'block', width: '100%', textAlign: 'left',
-                          padding: '12px 16px', background: selectedCity === c.code ? 'var(--seafoam)' : 'white',
-                          border: 'none', borderBottom: '1px solid var(--border)',
-                          cursor: 'pointer', transition: 'background 0.15s',
+                          padding: '12px 16px',
+                          borderBottom: '1px solid var(--border)',
+                          cursor: 'pointer',
+                          background: selectedCity === c.code ? 'var(--seafoam)' : 'white',
+                          transition: 'background 0.15s',
                         }}
-                        onMouseEnter={e => (e.currentTarget.style.background = 'var(--seafoam)')}
-                        onMouseLeave={e => (e.currentTarget.style.background = selectedCity === c.code ? 'var(--seafoam)' : 'white')}
+                        onMouseEnter={e => { if (selectedCity !== c.code) e.currentTarget.style.background = 'var(--seafoam)'; }}
+                        onMouseLeave={e => { if (selectedCity !== c.code) e.currentTarget.style.background = 'white'; }}
                       >
-                        <p style={{ fontFamily: 'Syne', fontWeight: 700, fontSize: 14, color: 'var(--nightsurf)', margin: 0 }}>
-                          {c.label} <span style={{ color: 'var(--lagoon)', fontWeight: 800 }}>({c.code})</span>
+                        <p style={{ fontFamily: 'Syne', fontWeight: 700, fontSize: 14, color: 'var(--nightsurf)', margin: '0 0 2px' }}>
+                          {c.label} <span style={{ color: 'var(--lagoon)' }}>({c.code})</span>
                         </p>
                         <p style={{ fontFamily: 'Syne', fontSize: 11, color: 'var(--lagoon-muted)', margin: 0 }}>{c.sub}</p>
-                      </button>
+                      </div>
                     ))}
                   </div>
                 )}
@@ -231,13 +239,35 @@ export default function HomePage() {
               {/* Departure */}
               <div style={{ padding: '14px 16px', borderRight: '1px solid var(--border)' }}>
                 <p style={{ fontFamily: 'Syne', fontWeight: 400, fontSize: 10, color: 'var(--lagoon-muted)', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 4 }}>Departure</p>
-                <input type="date" value={departDate} onChange={e => setDepartDate(e.target.value)} style={{ border: 'none', outline: 'none', fontFamily: 'Syne', fontSize: 13, color: 'var(--nightsurf)', width: '100%', background: 'transparent' }} />
+                <input
+                  type="date"
+                  value={departDate}
+                  min={today}
+                  onChange={e => setDepartDate(e.target.value)}
+                  style={{
+                    border: 'none', outline: 'none',
+                    fontFamily: 'Syne', fontSize: 13,
+                    color: departDate ? 'var(--nightsurf)' : 'var(--lagoon-muted)',
+                    width: '100%', background: 'transparent', cursor: 'pointer',
+                  }}
+                />
               </div>
 
               {/* Return */}
               <div style={{ padding: '14px 16px', borderRight: '1px solid var(--border)' }}>
                 <p style={{ fontFamily: 'Syne', fontWeight: 400, fontSize: 10, color: 'var(--lagoon-muted)', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 4 }}>Return</p>
-                <input type="date" value={returnDate} onChange={e => setReturnDate(e.target.value)} style={{ border: 'none', outline: 'none', fontFamily: 'Syne', fontSize: 13, color: 'var(--nightsurf)', width: '100%', background: 'transparent' }} />
+                <input
+                  type="date"
+                  value={returnDate}
+                  min={departDate || today}
+                  onChange={e => setReturnDate(e.target.value)}
+                  style={{
+                    border: 'none', outline: 'none',
+                    fontFamily: 'Syne', fontSize: 13,
+                    color: returnDate ? 'var(--nightsurf)' : 'var(--lagoon-muted)',
+                    width: '100%', background: 'transparent', cursor: 'pointer',
+                  }}
+                />
               </div>
 
               {/* Passengers */}

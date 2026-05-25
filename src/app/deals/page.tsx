@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { Bell, PlaneLanding } from 'lucide-react';
+import Link from 'next/link';
 
 const ALL_DEALS = [
   { id:1, type:'hot', from:'CEB', to:'IAO', airline:'Sunlight Air', dates:'Jun 12–19', duration:'direct · 55 min', price:1850, label:'🔥 Deal on fire · 3 seats left', timerVal:63728, cta:'Book before it\'s gone' },
@@ -50,9 +51,12 @@ function DealCard({ deal }: { deal: typeof ALL_DEALS[0] }) {
         <p style={{ fontFamily:'Syne', fontWeight:400, fontSize:11, color:'var(--lagoon-muted)' }}>one way</p>
       </div>
       <div style={{ padding:'0 20px 20px' }}>
-        <a href="#" target="_blank" rel="noopener noreferrer" style={{ display:'block', textAlign:'center', background:s.cta, color:'white', borderRadius:8, padding:'12px', fontFamily:'Syne', fontWeight:800, fontSize:13, textDecoration:'none' }}>
+        <Link
+          href={`/booking?from=${deal.from}&to=${deal.to}&depart=${deal.dates}&arrive=&duration=${deal.duration}&price=${deal.price}`}
+          style={{ display:'block', textAlign:'center', background:s.cta, color:'white', borderRadius:8, padding:'12px', fontFamily:'Syne', fontWeight:800, fontSize:13, textDecoration:'none' }}
+        >
           {deal.cta} →
-        </a>
+        </Link>
       </div>
     </div>
   );
