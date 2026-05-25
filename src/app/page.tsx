@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { PlaneLanding, PlaneTakeoff, Lock, Search, Bell, ChevronRight, Waves, Music, Trees, Droplets, BookOpen, Calendar } from 'lucide-react';
@@ -103,6 +103,17 @@ export default function HomePage() {
   const [departDate, setDepartDate] = useState('');
   const [returnDate, setReturnDate] = useState('');
   const [pax, setPax] = useState('2 adults · Economy');
+  const cityRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (cityRef.current && !cityRef.current.contains(e.target as Node)) {
+        setShowCityDropdown(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const handleSearch = () => {
     router.push(`/flights?direction=${direction}&from=${selectedCity || 'CEB'}&depart=${departDate}&return=${returnDate}`);
@@ -165,29 +176,52 @@ export default function HomePage() {
                 <p style={{ fontFamily: 'Syne', fontWeight: 400, fontSize: 10, color: 'var(--lagoon-muted)', fontStyle: 'italic' }}>Always Siargao</p>
               </div>
 
-              {/* City */}
-              <div style={{ padding: '14px 16px', borderRight: '1px solid var(--border)', position: 'relative' }}>
+              {/* City Field */}
+              <div
+                style={{ padding: '14px 16px', borderRight: '1px solid var(--border)', position: 'relative' }}
+                ref={cityRef}
+              >
                 <p style={{ fontFamily: 'Syne', fontWeight: 400, fontSize: 10, color: 'var(--lagoon-muted)', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 4 }}>
                   {direction === 'to' ? 'Flying from' : 'Flying to'}
                 </p>
-                <button onClick={() => setShowCityDropdown(!showCityDropdown)} style={{
-                  background: 'none', border: 'none', cursor: 'pointer', padding: 0, textAlign: 'left', width: '100%',
-                }}>
-                  <p style={{ fontFamily: 'Syne', fontWeight: selectedCity ? 800 : 400, fontSize: selectedCity ? 16 : 14, color: selectedCity ? 'var(--nightsurf)' : 'var(--lagoon-muted)' }}>
-                    {selectedCity || 'Choose a city...'}
+                <button
+                  onMouseDown={(e) => { e.preventDefault(); setShowCityDropdown(!showCityDropdown); }}
+                  style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, textAlign: 'left', width: '100%' }}
+                >
+                  <p style={{ fontFamily: 'Syne', fontWeight: selectedCity ? 800 : 400, fontSize: selectedCity ? 15 : 14, color: selectedCity ? 'var(--nightsurf)' : 'var(--lagoon-muted)' }}>
+                    {selectedCity ? CITIES.find(c => c.code === selectedCity)?.label : 'Choose a city...'}
                   </p>
                   {!selectedCity && <p style={{ fontFamily: 'Syne', fontSize: 11, color: 'var(--lagoon-muted)' }}>Cebu · Clark · Siargao</p>}
                 </button>
                 {showCityDropdown && (
-                  <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, background: 'white', border: '1px solid var(--border)', borderRadius: 8, zIndex: 100, boxShadow: '0 8px 24px rgba(0,0,0,0.1)' }}>
+                  <div style={{
+                    position: 'absolute', top: '100%', left: 0, right: 0,
+                    background: 'white', border: '1px solid var(--border)',
+                    borderRadius: 10, zIndex: 200,
+                    boxShadow: '0 8px 32px rgba(0,0,0,0.12)',
+                    overflow: 'hidden',
+                  }}>
                     {CITIES.map(c => (
-                      <button key={c.code} onClick={() => { setSelectedCity(c.code); setShowCityDropdown(false); }} style={{
-                        display: 'block', width: '100%', textAlign: 'left', padding: '12px 16px',
-                        background: 'none', border: 'none', borderBottom: '1px solid var(--border)', cursor: 'pointer',
-                        fontFamily: 'Syne', fontSize: 14, color: 'var(--nightsurf)',
-                      }}>
-                        <strong>{c.label}</strong> <span style={{ color: 'var(--lagoon)', fontWeight: 800 }}>({c.code})</span>
-                        <br /><span style={{ fontSize: 11, color: 'var(--lagoon-muted)' }}>{c.sub}</span>
+                      <button
+                        key={c.code}
+                        onMouseDown={(e) => {
+                          e.preventDefault();
+                          setSelectedCity(c.code);
+                          setShowCityDropdown(false);
+                        }}
+                        style={{
+                          display: 'block', width: '100%', textAlign: 'left',
+                          padding: '12px 16px', background: selectedCity === c.code ? 'var(--seafoam)' : 'white',
+                          border: 'none', borderBottom: '1px solid var(--border)',
+                          cursor: 'pointer', transition: 'background 0.15s',
+                        }}
+                        onMouseEnter={e => (e.currentTarget.style.background = 'var(--seafoam)')}
+                        onMouseLeave={e => (e.currentTarget.style.background = selectedCity === c.code ? 'var(--seafoam)' : 'white')}
+                      >
+                        <p style={{ fontFamily: 'Syne', fontWeight: 700, fontSize: 14, color: 'var(--nightsurf)', margin: 0 }}>
+                          {c.label} <span style={{ color: 'var(--lagoon)', fontWeight: 800 }}>({c.code})</span>
+                        </p>
+                        <p style={{ fontFamily: 'Syne', fontSize: 11, color: 'var(--lagoon-muted)', margin: 0 }}>{c.sub}</p>
                       </button>
                     ))}
                   </div>
