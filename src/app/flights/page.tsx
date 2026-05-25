@@ -71,7 +71,7 @@ export default function FlightsPage() {
               { label: 'PRICE RANGE', content: (
                 <div>
                   <input type="range" min={0} max={5000} step={50} value={maxPrice} onChange={e => setMaxPrice(Number(e.target.value))} style={{ width: '100%', accentColor: 'var(--lagoon)' }} />
-                  <p style={{ fontFamily: 'Syne', fontSize: 12, color: 'var(--lagoon)', fontWeight: 800 }}>Up to ₱{maxPrice.toLocaleString()}</p>
+                  <p style={{ fontFamily: 'Syne', fontSize: 12, color: 'var(--lagoon)', fontWeight: 800 }}>Up to ₱{maxPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</p>
                 </div>
               )},
               { label: 'DEPARTURE TIME', content: (
@@ -121,7 +121,7 @@ export default function FlightsPage() {
                     </div>
                     <div style={{ textAlign: 'right' }}>
                       <p style={{ fontFamily: 'Syne', fontWeight: 400, fontSize: 11, color: 'var(--lagoon-muted)' }}>from</p>
-                      <p style={{ fontFamily: 'Syne', fontWeight: 800, fontSize: 26, color: 'var(--lagoon)' }}>₱{f.price.toLocaleString()}</p>
+                      <p style={{ fontFamily: 'Syne', fontWeight: 800, fontSize: 26, color: 'var(--lagoon)' }}>₱{f.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</p>
                       <p style={{ fontFamily: 'Syne', fontWeight: 400, fontSize: 11, color: 'var(--lagoon-muted)', marginBottom: 8 }}>per person</p>
                       <a href="#" target="_blank" rel="noopener noreferrer" style={{ background: 'var(--lagoon)', color: 'white', borderRadius: 8, padding: '10px 20px', fontFamily: 'Syne', fontWeight: 800, fontSize: 12, textDecoration: 'none', display: 'inline-block' }}>
                         Book now →

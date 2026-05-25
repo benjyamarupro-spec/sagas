@@ -46,7 +46,7 @@ function DealCard({ deal }: { deal: typeof ALL_DEALS[0] }) {
         <p style={{ fontFamily:'Syne', fontWeight:600, fontSize:13, color:'var(--nightsurf)', marginBottom:2 }}>✈ {deal.airline}</p>
         <p style={{ fontFamily:'Syne', fontWeight:400, fontSize:12, color:'var(--lagoon-muted)', marginBottom:16 }}>{deal.dates} · {deal.duration}</p>
         <p style={{ fontFamily:'Syne', fontWeight:400, fontSize:11, color:'var(--lagoon-muted)', marginBottom:2 }}>from</p>
-        <p style={{ fontFamily:'Syne', fontWeight:800, fontSize:26, color:s.price, marginBottom:2 }}>₱{deal.price.toLocaleString()}</p>
+        <p style={{ fontFamily:'Syne', fontWeight:800, fontSize:26, color:s.price, marginBottom:2 }}>₱{deal.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</p>
         <p style={{ fontFamily:'Syne', fontWeight:400, fontSize:11, color:'var(--lagoon-muted)' }}>one way</p>
       </div>
       <div style={{ padding:'0 20px 20px' }}>
