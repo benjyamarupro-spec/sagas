@@ -25,11 +25,10 @@ const ZONES = [
     tag: 'Surf · Legend',
     tagBg: 'var(--seafoam)', tagColor: 'var(--lagoon)',
     iconBg: 'var(--seafoam)', iconColor: 'var(--lagoon)',
-    img: 'https://images.unsplash.com/photo-1502680390469-be75c86b636f?w=700&h=420&fit=crop&q=85',
+    img: 'https://images.unsplash.com/photo-1505118380757-91f5f5632de0?w=700&h=420&fit=crop&q=85',
     desc: 'The most iconic surf break in Southeast Asia. Cloud 9 is a hollow right-hand barrel that draws world-class surfers every October for the Siargao International Surfing Cup. The wooden boardwalk stretching out to the break is a landmark in itself — perfect for sunset watching even if you\'ve never touched a surfboard.',
     vibe: 'For surfers, surf fans, and sunset chasers.',
     best: 'October — competition month, perfect swell',
-    coord: { lat: 9.8128, lng: 126.1748 },
   },
   {
     icon: Music,
@@ -37,11 +36,10 @@ const ZONES = [
     tag: 'Party · Nightlife',
     tagBg: 'var(--golden-light)', tagColor: '#7A5A00',
     iconBg: 'var(--golden-light)', iconColor: '#7A5A00',
-    img: 'https://images.unsplash.com/photo-1510414842594-a61c69b5ae57?w=700&h=420&fit=crop&q=85',
-    desc: 'The beating heart of Siargao tourism. General Luna is where everything happens — international restaurants, cocktail bars, surf schools, scooter rentals, live music, and some of the best sunsets in the Philippines. The famous AFAM Bridge is the go-to spot for golden hour. Digital nomads, long-term travelers, and backpackers all converge here.',
+    img: 'https://images.unsplash.com/photo-1596895111956-bf1cf0599ce5?w=700&h=420&fit=crop&q=85',
+    desc: 'The beating heart of Siargao tourism. General Luna is where everything happens — international restaurants, cocktail bars, surf schools, scooter rentals, live music, and some of the best sunsets in the Philippines. Digital nomads, long-term travelers, and backpackers all converge here.',
     vibe: 'For those who want to be in the middle of it all.',
     best: 'December–March (peak season energy)',
-    coord: { lat: 9.8599, lng: 126.1862 },
   },
   {
     icon: Droplets,
@@ -49,11 +47,10 @@ const ZONES = [
     tag: 'Nature · Chill',
     tagBg: '#E3F2FD', tagColor: '#1565C0',
     iconBg: '#E3F2FD', iconColor: '#1565C0',
-    img: 'https://images.unsplash.com/photo-1516026672322-bc52d61a47d7?w=700&h=420&fit=crop&q=85',
-    desc: 'A hidden gem just minutes from General Luna. Maasin River is a peaceful mangrove river where you can kayak or paddle board through dense jungle canopy. Incredibly photogenic, serene, and almost always uncrowded. One of the best half-day activities on the island — rent a board and explore.',
+    img: 'https://images.unsplash.com/photo-1501854140801-50d01698950b?w=700&h=420&fit=crop&q=85',
+    desc: 'A hidden gem just minutes from General Luna. Maasin River is a peaceful mangrove river where you can kayak or paddleboard through dense jungle canopy. Incredibly photogenic, serene, and almost always uncrowded. One of the best half-day activities on the island.',
     vibe: 'For those who want nature without the effort.',
     best: 'Dry season (Feb–May) for calm water',
-    coord: { lat: 9.8750, lng: 126.1650 },
   },
   {
     icon: Mountain,
@@ -61,11 +58,10 @@ const ZONES = [
     tag: 'Hidden Gem · Fresh water',
     tagBg: '#E8F5E9', tagColor: '#2E7D32',
     iconBg: '#E8F5E9', iconColor: '#2E7D32',
-    img: 'https://images.unsplash.com/photo-1544551763-77ef2d0cfc6c?w=700&h=420&fit=crop&q=85',
-    desc: 'A natural freshwater spring hidden in the jungle — crystal clear, cold, and incredibly refreshing. Beto Cold Spring is one of Siargao\'s best-kept secrets. You swim in a natural pool fed by underground springs, surrounded by tropical forest. Fewer than 5% of visitors ever find it. Bring a local guide.',
+    img: 'https://images.unsplash.com/photo-1433086966358-54859d0ed716?w=700&h=420&fit=crop&q=85',
+    desc: 'A natural freshwater spring hidden in the jungle — crystal clear, cold, and incredibly refreshing. Beto Cold Spring is one of Siargao\'s best-kept secrets. Swim in a natural pool fed by underground springs, surrounded by tropical forest. Fewer than 5% of visitors ever find it.',
     vibe: 'For adventurers willing to go off the beaten track.',
     best: 'Any time — water is always cold and clear',
-    coord: { lat: 9.9100, lng: 126.0900 },
   },
   {
     icon: Trees,
@@ -74,10 +70,9 @@ const ZONES = [
     tagBg: '#F3E5F5', tagColor: '#6A1B9A',
     iconBg: '#F3E5F5', iconColor: '#6A1B9A',
     img: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=700&h=420&fit=crop&q=85',
-    desc: 'Head 45 minutes north and the island transforms completely. Pacifico is raw, empty, and breathtaking — long stretches of white sand, powerful beach breaks, and almost no tourists. Local fishermen still outnumber visitors here. A popular surf destination for those who want to escape the General Luna crowd.',
+    desc: 'Head 45 minutes north and the island transforms completely. Pacifico is raw, empty, and breathtaking — long stretches of white sand, powerful beach breaks, and almost no tourists. Local fishermen still outnumber visitors here.',
     vibe: 'For surfers and adventurers escaping the crowd.',
     best: 'October–February for surf, any time for solitude',
-    coord: { lat: 9.9800, lng: 126.0500 },
   },
   {
     icon: Wind,
@@ -85,11 +80,10 @@ const ZONES = [
     tag: 'Unspoiled · Local',
     tagBg: '#FFF3E0', tagColor: '#E65100',
     iconBg: '#FFF3E0', iconColor: '#E65100',
-    img: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=700&h=420&fit=crop&q=85',
+    img: 'https://images.unsplash.com/photo-1519046904884-53103b34b206?w=700&h=420&fit=crop&q=85',
     desc: 'One of Siargao\'s most beautiful and least-visited beaches. Alegría sits on the northwestern coast — powdery white sand, turquoise water, and almost no infrastructure. You\'ll need a motorbike and about an hour from General Luna, but the reward is a beach that feels entirely yours.',
     vibe: 'For those who want paradise without the crowd.',
     best: 'Dry season (Feb–May) — calm water, clear sky',
-    coord: { lat: 9.9300, lng: 126.0200 },
   },
   {
     icon: Droplets,
@@ -97,11 +91,55 @@ const ZONES = [
     tag: 'Lagoons · Must-do',
     tagBg: '#E1F5FE', tagColor: '#0277BD',
     iconBg: '#E1F5FE', iconColor: '#0277BD',
-    img: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=700&h=420&fit=crop&q=85',
-    desc: 'Siargao\'s most iconic photo spot — an emerald green lagoon surrounded by mangroves, accessible only by boat (30–40 min from GL). Sugba is everything you imagine the Philippines to be: turquoise water, swing ropes into the lagoon, paddleboards, and total serenity. Go early morning to avoid the crowds.',
+    img: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=700&h=420&fit=crop&q=85',
+    desc: 'Siargao\'s most iconic photo spot — an emerald green lagoon surrounded by mangroves, accessible only by boat (30–40 min from GL). Sugba is everything you imagine the Philippines to be: turquoise water, swing ropes into the lagoon, paddleboards, and total serenity. Go early morning.',
     vibe: 'For everyone — this one is unmissable.',
     best: 'March–May (calmest seas, best visibility)',
-    coord: { lat: 9.7500, lng: 126.0800 },
+  },
+];
+
+const ATTRACTIONS = [
+  {
+    name: 'Cloud 9 Surfing Area',
+    query: 'Cloud 9 Surfing Area General Luna Siargao Philippines',
+    type: 'surf',
+    color: '#0A5C54',
+  },
+  {
+    name: 'General Luna',
+    query: 'General Luna town center Siargao Philippines',
+    type: 'town',
+    color: '#E8B44A',
+  },
+  {
+    name: 'Maasin River',
+    query: 'Maasin River Siargao Philippines',
+    type: 'nature',
+    color: '#1565C0',
+  },
+  {
+    name: 'Beto Cold Spring',
+    query: 'Beto Cold Spring Siargao Philippines',
+    type: 'nature',
+    color: '#2E7D32',
+  },
+  {
+    name: 'Pacifico Beach',
+    query: 'Pacifico Beach Siargao Philippines',
+    type: 'beach',
+    color: '#6A1B9A',
+  },
+  {
+    name: 'Alegría Beach',
+    query: 'Alegria Beach Siargao Philippines',
+    type: 'beach',
+    color: '#E65100',
+  },
+  {
+    name: 'Sugba Lagoon',
+    query: 'Sugba Lagoon Del Carmen Siargao Philippines',
+    type: 'lagoon',
+    color: '#0277BD',
   },
 ];
 
@@ -341,7 +379,7 @@ function SiargaoMap({ filter }: { filter: number | 'all' }) {
         document.getElementById('siargao-map'),
         {
           center: { lat: 9.7870, lng: 126.1550 },
-          zoom: 14,
+          zoom: 13,
           styles: [
             { featureType: 'poi', stylers: [{ visibility: 'off' }] },
             { featureType: 'transit', stylers: [{ visibility: 'off' }] },
@@ -358,6 +396,53 @@ function SiargaoMap({ filter }: { filter: number | 'all' }) {
 
       const service = new window.google.maps.places.PlacesService(map);
 
+      // --- COUCHE 1 : ATTRACTIONS (marqueurs épingle) ---
+      ATTRACTIONS.forEach(attraction => {
+        service.findPlaceFromQuery(
+          {
+            query: attraction.query,
+            fields: ['geometry', 'name'],
+          },
+          (results: any[], status: string) => {
+            if (
+              status === window.google.maps.places.PlacesServiceStatus.OK &&
+              results?.[0]?.geometry?.location
+            ) {
+              const marker = new window.google.maps.Marker({
+                position: results[0].geometry.location,
+                map,
+                title: attraction.name,
+                icon: {
+                  path: 'M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z',
+                  fillColor: attraction.color,
+                  fillOpacity: 1,
+                  strokeColor: 'white',
+                  strokeWeight: 1.5,
+                  scale: 1.6,
+                  anchor: new window.google.maps.Point(12, 22),
+                },
+              });
+
+              const infoWindow = new window.google.maps.InfoWindow({
+                content: `
+                  <div style="font-family:Syne,sans-serif;padding:8px;min-width:160px">
+                    <p style="font-weight:800;font-size:14px;margin:0 0 4px;color:#071315">
+                      📍 ${attraction.name}
+                    </p>
+                    <p style="font-size:12px;color:${attraction.color};margin:0;font-weight:600;text-transform:uppercase;letter-spacing:1px">
+                      ${attraction.type}
+                    </p>
+                  </div>
+                `,
+              });
+
+              marker.addListener('click', () => infoWindow.open(map, marker));
+            }
+          }
+        );
+      });
+
+      // --- COUCHE 2 : RESTAURANTS (marqueurs cercle) ---
       const visible = filter === 'all'
         ? RESTAURANTS
         : RESTAURANTS.filter(r => r.priceLevel === filter);
@@ -368,13 +453,12 @@ function SiargaoMap({ filter }: { filter: number | 'all' }) {
         service.findPlaceFromQuery(
           {
             query: `${restaurant.name} General Luna Siargao Philippines`,
-            fields: ['geometry', 'name', 'place_id'],
+            fields: ['geometry', 'name'],
           },
           (results: any[], status: string) => {
             if (
               status === window.google.maps.places.PlacesServiceStatus.OK &&
-              results &&
-              results[0]?.geometry?.location
+              results?.[0]?.geometry?.location
             ) {
               const marker = new window.google.maps.Marker({
                 position: results[0].geometry.location,
@@ -403,9 +487,7 @@ function SiargaoMap({ filter }: { filter: number | 'all' }) {
                 `,
               });
 
-              marker.addListener('click', () => {
-                infoWindow.open(map, marker);
-              });
+              marker.addListener('click', () => infoWindow.open(map, marker));
             }
           }
         );
@@ -420,15 +502,32 @@ function SiargaoMap({ filter }: { filter: number | 'all' }) {
   }, [filter]);
 
   return (
-    <div
-      id="siargao-map"
-      style={{
-        width: '100%',
-        height: 480,
-        borderRadius: 12,
-        border: '1px solid var(--border)',
-      }}
-    />
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+      <div
+        id="siargao-map"
+        style={{
+          width: '100%',
+          height: 480,
+          borderRadius: 12,
+          border: '1px solid var(--border)',
+        }}
+      />
+      {/* Légende */}
+      <div style={{ display: 'flex', gap: 20, flexWrap: 'wrap', padding: '8px 4px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          <span style={{ fontSize: 18 }}>📍</span>
+          <span style={{ fontFamily: 'Syne', fontSize: 12, color: 'var(--lagoon-muted)' }}>Attractions</span>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          <div style={{ width: 12, height: 12, borderRadius: '50%', background: 'var(--lagoon)', border: '2px solid white', boxShadow: '0 0 0 1px var(--lagoon)' }} />
+          <span style={{ fontFamily: 'Syne', fontSize: 12, color: 'var(--lagoon-muted)' }}>Restaurants</span>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          <div style={{ width: 14, height: 14, borderRadius: '50%', background: '#E8B44A', border: '2px solid white', boxShadow: '0 0 0 1px #E8B44A' }} />
+          <span style={{ fontFamily: 'Syne', fontSize: 12, color: 'var(--lagoon-muted)' }}>⭐ SAGAS team favorite</span>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -528,9 +627,27 @@ export default function GuidePage() {
             <p style={{ fontFamily: 'Syne', fontWeight: 400, fontSize: 14, color: 'var(--lagoon-muted)', marginBottom: 24 }}>All routes to Siargao explained.</p>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
               {[
-                { from: 'From Cebu', best: 'Sunlight Air direct — 55 min — from ₱1,780', alt: 'Multiple daily departures. The easiest and cheapest gateway.', tip: 'Book at least 3 weeks ahead. Morning flights are usually cheapest.', code: 'CEB' },
-                { from: 'From Manila', best: 'Fly Cebu Pacific to Cebu, then Sunlight Air to Siargao (~4h total)', alt: 'PAL moved direct MNL–IAO flights to Clark Airport in 2025.', tip: 'Via Cebu is almost always faster and cheaper than a direct route.', code: 'MNL' },
-                { from: 'From Davao', best: 'Connect via Cebu — check Sunlight Air availability', alt: 'Limited direct options from Davao to Siargao.', tip: 'Book the Cebu leg first, then add the Siargao leg.', code: 'DVO' },
+                {
+                  from: 'From Cebu',
+                  best: 'Sunlight Air direct — 55 min — from ₱1,850',
+                  alt: 'Up to 5 daily departures. The easiest and cheapest gateway.',
+                  tip: 'Book at least 3 weeks ahead. Morning flights are usually cheapest.',
+                  code: 'CEB'
+                },
+                {
+                  from: 'From Clark (Angeles City)',
+                  best: 'Sunlight Air direct — 2h 30min — from ₱4,300',
+                  alt: 'Clark is 2h from Manila by P2P bus (₱250). Perfect for travelers from Luzon.',
+                  tip: 'Much less stressful than flying via NAIA. Take the P2P bus from Cubao or Pasay to Clark.',
+                  code: 'CRK'
+                },
+                {
+                  from: 'From Manila (NAIA)',
+                  best: 'Take P2P bus to Clark (2h) → Sunlight Air direct to Siargao (2h30)',
+                  alt: 'Sunlight Air no longer operates from NAIA. Clark is now the Luzon gateway.',
+                  tip: 'Total journey ~5h but stress-free. Buses every hour from Cubao & Pasay.',
+                  code: 'CRK'
+                },
               ].map((r, i) => (
                 <div key={i} style={{ background: 'white', border: '1px solid var(--border)', borderRadius: 12, padding: 24 }}>
                   <p style={{ fontFamily: 'Syne', fontWeight: 800, fontSize: 17, color: 'var(--nightsurf)', marginBottom: 8 }}>{r.from}</p>

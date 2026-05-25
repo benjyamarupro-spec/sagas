@@ -11,13 +11,25 @@ export default function RoutesPage() {
       from: 'Cebu', fromCode: 'CEB', fromAirport: 'Mactan-Cebu International',
       to: 'Siargao', toCode: 'IAO', toAirport: 'Sayak Airport',
       type: 'direct', duration: '55 min', airline: 'Sunlight Air',
-      frequency: 'Up to 4 flights/day', minPrice: 1850, avgPrice: 2200,
+      frequency: 'Up to 5 flights/day', minPrice: 1850, avgPrice: 2100,
     },
     {
       from: 'Siargao', fromCode: 'IAO', fromAirport: 'Sayak Airport',
       to: 'Cebu', toCode: 'CEB', toAirport: 'Mactan-Cebu International',
       type: 'direct', duration: '55 min', airline: 'Sunlight Air',
-      frequency: 'Up to 4 flights/day', minPrice: 1850, avgPrice: 2200,
+      frequency: 'Up to 5 flights/day', minPrice: 1850, avgPrice: 2100,
+    },
+    {
+      from: 'Clark (Angeles)', fromCode: 'CRK', fromAirport: 'Clark International Airport',
+      to: 'Siargao', toCode: 'IAO', toAirport: 'Sayak Airport',
+      type: 'direct', duration: '2h 30min', airline: 'Sunlight Air',
+      frequency: '2 flights/day', minPrice: 4300, avgPrice: 4700,
+    },
+    {
+      from: 'Siargao', fromCode: 'IAO', fromAirport: 'Sayak Airport',
+      to: 'Clark (Angeles)', toCode: 'CRK', toAirport: 'Clark International Airport',
+      type: 'direct', duration: '2h 30min', airline: 'Sunlight Air',
+      frequency: '2 flights/day', minPrice: 4300, avgPrice: 4700,
     },
   ];
 
@@ -141,15 +153,15 @@ export default function RoutesPage() {
           {/* Pro tip */}
           <div style={{ background: 'var(--golden-light)', border: '1px solid rgba(232,180,74,0.4)', borderRadius: 12, padding: '20px 24px' }}>
             <p style={{ fontFamily: 'Syne', fontWeight: 400, fontSize: 14, color: '#7A5A00', lineHeight: 1.6 }}>
-              💡 <strong>Pro tip:</strong> Book Sunlight Air at least 3 weeks in advance — it's the most popular carrier on the Cebu–Siargao route and seats fill fast, especially October through December during surf season.
+              💡 <strong>Pro tip:</strong> Clark Airport (CRK) is your best gateway from Luzon. It's 2h from Manila by P2P bus (₱250), and Sunlight Air flies direct to Siargao in 2h30. Much less stressful than flying via NAIA.
             </p>
           </div>
 
           {/* Coming soon */}
           <div style={{ background: 'white', border: '1px solid var(--border)', borderRadius: 12, padding: '24px 28px', textAlign: 'center' }}>
-            <p style={{ fontFamily: 'Syne', fontWeight: 600, fontSize: 15, color: 'var(--nightsurf)', marginBottom: 6 }}>More routes coming soon</p>
+            <p style={{ fontFamily: 'Syne', fontWeight: 600, fontSize: 15, color: 'var(--nightsurf)', marginBottom: 6 }}>All Sunlight Air routes listed</p>
             <p style={{ fontFamily: 'Syne', fontWeight: 400, fontSize: 13, color: 'var(--lagoon-muted)' }}>
-              SAGAS is currently specialized in Sunlight Air routes between Cebu and Siargao. Additional airlines and routes will be added as we grow.
+              SAGAS currently lists all confirmed Sunlight Air routes to Siargao. Routes are updated as Sunlight Air expands its network in 2025–2026.
             </p>
           </div>
 

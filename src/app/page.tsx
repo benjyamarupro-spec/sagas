@@ -7,7 +7,9 @@ import { PlaneLanding, PlaneTakeoff, Lock, Search, Bell, ChevronRight, Waves, Mu
 // --- DONNÉES ---
 const ROUTES = [
   { icon: '✈', from: 'Cebu', code: 'CEB', price: '₱1,850', duration: '55 min', type: 'direct', href: '/flights?from=CEB' },
-  { icon: '✈', from: 'Siargao', code: 'IAO', price: '₱1,850', duration: '55 min', type: 'direct', href: '/flights?from=IAO' },
+  { icon: '✈', from: 'Clark (Angeles)', code: 'CRK', price: '₱4,300', duration: '2h 30min', type: 'direct', href: '/flights?from=CRK' },
+  { icon: '✈', from: 'Siargao → Cebu', code: 'IAO→CEB', price: '₱1,850', duration: '55 min', type: 'direct', href: '/flights?from=IAO&to=CEB' },
+  { icon: '✈', from: 'Siargao → Clark', code: 'IAO→CRK', price: '₱4,300', duration: '2h 30min', type: 'direct', href: '/flights?from=IAO&to=CRK' },
 ];
 
 const VIBES = [
@@ -234,7 +236,7 @@ export default function HomePage() {
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16 }}>
               <DealCard type="hot" from="CEB" to="IAO" airline="Sunlight Air" dates="Jun 12–19" duration="direct · 55 min" price="₱1,850" label="🔥 Deal on fire · 3 seats left" timerVal={63728} ctaText="Book before it's gone" borderColor="var(--coral)" />
-              <DealCard type="top" from="CEB" to="IAO" airline="Sunlight Air" dates="Jul 5–12" duration="direct · 55 min" price="₱2,100" label="🕐 Price drops in" timerVal={22533} ctaText="Lock this price" borderColor="var(--lagoon)" />
+              <DealCard type="top" from="CRK" to="IAO" airline="Sunlight Air" dates="Jul 5–12" duration="direct · 2h 30min" price="₱4,300" label="🕐 Price drops in" timerVal={22533} ctaText="Lock this price" borderColor="var(--lagoon)" />
               <DealCard type="standard" from="IAO" to="CEB" airline="Sunlight Air" dates="Jun 22" duration="direct · 55 min" price="₱1,980" label="👥 43 bookings this month" urgency="Best value" timerVal={0} ctaText="See this deal" borderColor="" />
             </div>
           </div>
@@ -242,7 +244,7 @@ export default function HomePage() {
           {/* ROUTES BAND */}
           <div style={{ background: 'white', borderRadius: 16, border: '1px solid var(--border)', padding: '24px 28px' }}>
             <p style={{ fontFamily: 'Syne', fontWeight: 600, fontSize: 10, color: 'var(--lagoon-muted)', textTransform: 'uppercase', letterSpacing: 2, marginBottom: 14 }}>
-              SUNLIGHT AIR ROUTES — SIARGAO ↔ CEBU
+              SUNLIGHT AIR ROUTES — CEB · CRK · IAO
             </p>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
               {ROUTES.map((r, i) => (

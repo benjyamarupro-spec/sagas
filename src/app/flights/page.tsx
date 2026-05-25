@@ -4,23 +4,37 @@ import { PlaneLanding, Search, Filter } from 'lucide-react';
 import Link from 'next/link';
 
 const ALL_FLIGHTS = [
-  { id:1, from:'CEB', fromCity:'Cebu', to:'IAO', depart:'06:00', arrive:'06:55', duration:'55 min', price:1850, badge:'Best price today', badgeType:'best' },
-  { id:2, from:'CEB', fromCity:'Cebu', to:'IAO', depart:'09:30', arrive:'10:25', duration:'55 min', price:1980, badge:null, badgeType:null },
-  { id:3, from:'CEB', fromCity:'Cebu', to:'IAO', depart:'12:00', arrive:'12:55', duration:'55 min', price:2100, badge:'🔥 Only 4 seats', badgeType:'urgent' },
-  { id:4, from:'CEB', fromCity:'Cebu', to:'IAO', depart:'15:30', arrive:'16:25', duration:'55 min', price:1920, badge:null, badgeType:null },
-  { id:5, from:'CEB', fromCity:'Cebu', to:'IAO', depart:'17:00', arrive:'17:55', duration:'55 min', price:2050, badge:'⏱ Price valid 6h', badgeType:'warning' },
-  { id:6, from:'IAO', fromCity:'Siargao', to:'CEB', depart:'07:30', arrive:'08:25', duration:'55 min', price:1850, badge:'Best price today', badgeType:'best' },
-  { id:7, from:'IAO', fromCity:'Siargao', to:'CEB', depart:'11:00', arrive:'11:55', duration:'55 min', price:1980, badge:null, badgeType:null },
-  { id:8, from:'IAO', fromCity:'Siargao', to:'CEB', depart:'14:30', arrive:'15:25', duration:'55 min', price:2100, badge:null, badgeType:null },
+  // CEB → IAO
+  { id:1, from:'CEB', fromCity:'Cebu', to:'IAO', toCity:'Siargao', depart:'06:00', arrive:'06:55', duration:'55 min', price:1850, badge:'Best price today', badgeType:'best' },
+  { id:2, from:'CEB', fromCity:'Cebu', to:'IAO', toCity:'Siargao', depart:'09:30', arrive:'10:25', duration:'55 min', price:1980, badge:null, badgeType:null },
+  { id:3, from:'CEB', fromCity:'Cebu', to:'IAO', toCity:'Siargao', depart:'12:00', arrive:'12:55', duration:'55 min', price:2100, badge:'🔥 Only 4 seats', badgeType:'urgent' },
+  { id:4, from:'CEB', fromCity:'Cebu', to:'IAO', toCity:'Siargao', depart:'15:30', arrive:'16:25', duration:'55 min', price:1920, badge:null, badgeType:null },
+  { id:5, from:'CEB', fromCity:'Cebu', to:'IAO', toCity:'Siargao', depart:'17:00', arrive:'17:55', duration:'55 min', price:2050, badge:'⏱ Price valid 6h', badgeType:'warning' },
+  // IAO → CEB
+  { id:6, from:'IAO', fromCity:'Siargao', to:'CEB', toCity:'Cebu', depart:'07:30', arrive:'08:25', duration:'55 min', price:1850, badge:'Best price today', badgeType:'best' },
+  { id:7, from:'IAO', fromCity:'Siargao', to:'CEB', toCity:'Cebu', depart:'11:00', arrive:'11:55', duration:'55 min', price:1980, badge:null, badgeType:null },
+  { id:8, from:'IAO', fromCity:'Siargao', to:'CEB', toCity:'Cebu', depart:'14:30', arrive:'15:25', duration:'55 min', price:2100, badge:null, badgeType:null },
+  // CRK → IAO
+  { id:9, from:'CRK', fromCity:'Clark (Angeles)', to:'IAO', toCity:'Siargao', depart:'07:00', arrive:'09:30', duration:'2h 30min', price:4300, badge:'Direct from Luzon', badgeType:'best' },
+  { id:10, from:'CRK', fromCity:'Clark (Angeles)', to:'IAO', toCity:'Siargao', depart:'13:00', arrive:'15:30', duration:'2h 30min', price:4500, badge:null, badgeType:null },
+  // IAO → CRK
+  { id:11, from:'IAO', fromCity:'Siargao', to:'CRK', toCity:'Clark (Angeles)', depart:'10:00', arrive:'12:30', duration:'2h 30min', price:4300, badge:'Direct to Luzon', badgeType:'best' },
+  { id:12, from:'IAO', fromCity:'Siargao', to:'CRK', toCity:'Clark (Angeles)', depart:'16:00', arrive:'18:30', duration:'2h 30min', price:4500, badge:null, badgeType:null },
 ];
 
 export default function FlightsPage() {
   const [maxPrice, setMaxPrice] = useState(5000);
   const [sortBy, setSortBy] = useState('cheapest');
   const [timeFilter, setTimeFilter] = useState('all');
+  const [routeFilter, setRouteFilter] = useState('all');
 
   const filtered = ALL_FLIGHTS
     .filter(f => f.price <= maxPrice)
+    .filter(f => {
+      if (routeFilter === 'ceb') return f.from === 'CEB' || f.to === 'CEB';
+      if (routeFilter === 'crk') return f.from === 'CRK' || f.to === 'CRK';
+      return true;
+    })
     .filter(f => {
       if (timeFilter === 'morning') return parseInt(f.depart) < 12;
       if (timeFilter === 'afternoon') return parseInt(f.depart) >= 12 && parseInt(f.depart) < 18;
@@ -68,6 +82,15 @@ export default function FlightsPage() {
                   <option value="time">Departure time</option>
                 </select>
               )},
+              { label: 'ROUTE', content: (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                  {[['all','All routes'],['ceb','Cebu ↔ Siargao'],['crk','Clark ↔ Siargao']].map(([v,l]) => (
+                    <button key={v} onClick={() => setRouteFilter(v)} style={{ padding: '8px', fontFamily: 'Syne', fontSize: 12, background: routeFilter === v ? 'var(--lagoon)' : 'var(--seafoam)', color: routeFilter === v ? 'white' : 'var(--lagoon-muted)', border: 'none', borderRadius: 6, cursor: 'pointer', textAlign: 'left' }}>
+                      {l}
+                    </button>
+                  ))}
+                </div>
+              )},
               { label: 'PRICE RANGE', content: (
                 <div>
                   <input type="range" min={0} max={5000} step={50} value={maxPrice} onChange={e => setMaxPrice(Number(e.target.value))} style={{ width: '100%', accentColor: 'var(--lagoon)' }} />
@@ -110,7 +133,7 @@ export default function FlightsPage() {
                       <span style={{ fontFamily: 'Syne', fontWeight: 800, fontSize: 14, color: 'var(--lagoon)' }}>SA</span>
                     </div>
                     <div style={{ flex: 1 }}>
-                      <p style={{ fontFamily: 'Syne', fontWeight: 600, fontSize: 13, color: 'var(--lagoon-muted)', marginBottom: 4 }}>Sunlight Air · direct · 55 min</p>
+                      <p style={{ fontFamily: 'Syne', fontWeight: 600, fontSize: 13, color: 'var(--lagoon-muted)', marginBottom: 4 }}>Sunlight Air · direct · {f.duration}</p>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                         <span style={{ fontFamily: 'Syne', fontWeight: 800, fontSize: 20, color: 'var(--nightsurf)' }}>{f.depart}</span>
                         <span style={{ fontFamily: 'Syne', fontWeight: 800, fontSize: 13, color: 'var(--lagoon-muted)' }}>{f.from}</span>
