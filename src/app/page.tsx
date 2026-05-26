@@ -18,25 +18,25 @@ const VIBES = [
     icon: Waves, name: 'Cloud 9', desc: 'The legendary barrel wave. World-class surf, pro competitions, pure stoke.',
     tag: 'Surf · Legend', tagBg: 'var(--seafoam)', tagColor: 'var(--lagoon)',
     iconBg: 'var(--seafoam)', iconColor: 'var(--lagoon)',
-    img: 'https://images.unsplash.com/photo-1502680390469-be75c86b636f?w=600&h=300&fit=crop&q=80',
+    img: '/images/zones/cloud9.webp',
   },
   {
     icon: Music, name: 'General Luna', desc: 'The beating heart. Restaurants, bars, nightlife, sunsets, people, energy.',
     tag: 'Party · Nightlife', tagBg: 'var(--golden-light)', tagColor: '#7A5A00',
     iconBg: 'var(--golden-light)', iconColor: '#7A5A00',
-    img: 'https://images.unsplash.com/photo-1510414842594-a61c69b5ae57?w=600&h=300&fit=crop&q=80',
+    img: '/images/zones/general-luna.webp',
   },
   {
     icon: Trees, name: 'North Siargao', desc: 'Empty beaches, raw jungle, zero crowds. The island before the island.',
     tag: 'Wild · Off-grid', tagBg: '#E8F5E9', tagColor: '#2E7D32',
     iconBg: '#E8F5E9', iconColor: '#2E7D32',
-    img: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&h=300&fit=crop&q=80',
+    img: '/images/zones/pacifico.webp',
   },
   {
     icon: Droplets, name: 'Sugba & Islands', desc: 'Turquoise lagoons, island hopping, snorkeling, absolute calm.',
     tag: 'Lagoons · Nature', tagBg: '#E3F2FD', tagColor: '#1565C0',
     iconBg: '#E3F2FD', iconColor: '#1565C0',
-    img: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=600&h=300&fit=crop&q=80',
+    img: '/images/zones/sugba-lagoon.webp',
   },
 ];
 
