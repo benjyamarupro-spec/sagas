@@ -139,8 +139,17 @@ function FlightsContent() {
                         {f.badge}
                       </span>
                     )}
-                    <div style={{ width: 44, height: 44, background: 'var(--seafoam)', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                      <span style={{ fontFamily: 'Syne', fontWeight: 800, fontSize: 14, color: 'var(--lagoon)' }}>SA</span>
+                    <div style={{ width: 48, height: 48, borderRadius: 10, overflow: 'hidden', flexShrink: 0, border: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'white' }}>
+                      <img
+                        src="https://airhex.com/images/airline-logos/square/sunlight-air.png"
+                        alt="Sunlight Air"
+                        style={{ width: 44, height: 44, objectFit: 'contain' }}
+                        onError={(e) => {
+                          e.currentTarget.style.display = 'none';
+                          e.currentTarget.parentElement!.innerHTML =
+                            '<span style="fontFamily:Syne,sans-serif;fontWeight:800;fontSize:12px;color:#0A5C54">SA</span>';
+                        }}
+                      />
                     </div>
                     <div style={{ flex: 1 }}>
                       <p style={{ fontFamily: 'Syne', fontWeight: 600, fontSize: 13, color: 'var(--lagoon-muted)', marginBottom: 4 }}>Sunlight Air · direct · {f.duration}</p>
@@ -151,9 +160,16 @@ function FlightsContent() {
                         <span style={{ fontFamily: 'Syne', fontWeight: 800, fontSize: 20, color: 'var(--nightsurf)' }}>{f.arrive}</span>
                         <span style={{ fontFamily: 'Syne', fontWeight: 800, fontSize: 13, color: 'var(--lagoon)' }}>{f.to}</span>
                       </div>
-                      <p style={{ fontFamily: 'Syne', fontWeight: 400, fontSize: 12, color: 'var(--lagoon-muted)', margin: '4px 0 0' }}>
-                        📅 {departParam ? formatDate(departParam) : 'Date not selected'}
-                      </p>
+                      {departParam && (
+                        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: 'var(--seafoam)', border: '1px solid rgba(10,92,84,0.15)', borderRadius: 20, padding: '3px 10px', marginTop: 8 }}>
+                          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#4A9080" strokeWidth="2.5" strokeLinecap="round">
+                            <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+                          </svg>
+                          <span style={{ fontFamily: 'Syne', fontWeight: 600, fontSize: 11, color: 'var(--lagoon-muted)' }}>
+                            {formatDate(departParam)}
+                          </span>
+                        </div>
+                      )}
                     </div>
                     <div style={{ textAlign: 'right' }}>
                       <p style={{ fontFamily: 'Syne', fontWeight: 400, fontSize: 11, color: 'var(--lagoon-muted)' }}>from</p>
