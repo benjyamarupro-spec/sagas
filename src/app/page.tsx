@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { PlaneLanding, Bell, ChevronRight, Waves, Music, Trees, Droplets, BookOpen, Calendar } from 'lucide-react';
+import DatePicker from '@/components/DatePicker';
 
 // --- DONNÉES ---
 const ROUTES = [
@@ -224,42 +225,30 @@ export default function HomePage() {
               </div>
 
               {/* Departure date */}
-              <div style={{ padding: '14px 16px', borderRight: '1px solid var(--border)' }}>
-                <p style={{ fontFamily: 'Syne', fontSize: 10, color: 'var(--lagoon-muted)', textTransform: 'uppercase', letterSpacing: 1, margin: '0 0 4px' }}>Departure</p>
-                <input
-                  type="date"
+              <div style={{ borderRight: '1px solid var(--border)' }}>
+                <DatePicker
+                  label="DEPARTURE"
                   value={departDate}
-                  min={new Date().toISOString().split('T')[0]}
-                  onChange={e => setDepartDate(e.target.value)}
-                  style={{
-                    fontFamily: 'Syne', fontSize: 13,
-                    color: departDate ? 'var(--nightsurf)' : 'var(--lagoon-muted)',
-                    border: 'none', outline: 'none',
-                    background: 'transparent', width: '100%', cursor: 'pointer',
-                  }}
+                  onChange={setDepartDate}
+                  minDate={new Date().toISOString().split('T')[0]}
+                  placeholder="Select date"
                 />
               </div>
 
               {/* Return date */}
-              <div style={{ padding: '14px 16px', borderRight: '1px solid var(--border)' }}>
-                <p style={{ fontFamily: 'Syne', fontSize: 10, color: 'var(--lagoon-muted)', textTransform: 'uppercase', letterSpacing: 1, margin: '0 0 4px' }}>Return</p>
-                <input
-                  type="date"
+              <div style={{ borderRight: '1px solid var(--border)' }}>
+                <DatePicker
+                  label="RETURN"
                   value={returnDate}
-                  min={departDate || new Date().toISOString().split('T')[0]}
-                  onChange={e => setReturnDate(e.target.value)}
-                  style={{
-                    fontFamily: 'Syne', fontSize: 13,
-                    color: returnDate ? 'var(--nightsurf)' : 'var(--lagoon-muted)',
-                    border: 'none', outline: 'none',
-                    background: 'transparent', width: '100%', cursor: 'pointer',
-                  }}
+                  onChange={setReturnDate}
+                  minDate={departDate || new Date().toISOString().split('T')[0]}
+                  placeholder="Select date"
+                  subLabel={
+                    departDate && returnDate
+                      ? `${Math.round((new Date(returnDate).getTime() - new Date(departDate).getTime()) / 86400000)} nights`
+                      : undefined
+                  }
                 />
-                {departDate && returnDate && (
-                  <p style={{ fontFamily: 'Syne', fontSize: 11, color: 'var(--lagoon-muted)', margin: '2px 0 0' }}>
-                    {Math.round((new Date(returnDate).getTime() - new Date(departDate).getTime()) / (1000 * 60 * 60 * 24))} nights
-                  </p>
-                )}
               </div>
 
               {/* Passengers */}
