@@ -232,7 +232,7 @@ function FlightsContent() {
             </div>
           )}
 
-          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '220px 1fr', gap: 24 }}>
+          <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: 24, alignItems: 'flex-start' }}>
             {/* Desktop sidebar */}
             {!isMobile && <DesktopSidebar />}
 
