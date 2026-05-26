@@ -185,7 +185,7 @@ function FlightsContent() {
                               <p style={{ fontFamily: 'Syne', fontWeight: 700, fontSize: 13, color: 'var(--lagoon)', margin: 0 }}>{f.to}</p>
                             </div>
                           </div>
-                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px solid var(--border)', paddingTop: 12 }}>
+                          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 12, borderTop: '1px solid var(--border)', paddingTop: 12 }}>
                             <div>
                               <p style={{ fontFamily: 'Syne', fontWeight: 400, fontSize: 11, color: 'var(--lagoon-muted)', margin: 0 }}>from</p>
                               <p style={{ fontFamily: 'Syne', fontWeight: 800, fontSize: 24, color: 'var(--lagoon)', margin: 0 }}>₱{f.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</p>

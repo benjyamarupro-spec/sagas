@@ -1,5 +1,7 @@
+'use client';
 import Logo from './Logo';
 import Link from 'next/link';
+import { useWindowSize } from '@/hooks/useWindowSize';
 
 const FOOTER_LINKS = [
   { label: 'Deals', href: '/deals' },
@@ -9,13 +11,21 @@ const FOOTER_LINKS = [
 ];
 
 export default function Footer() {
+  const width = useWindowSize();
+  const isMobile = width > 0 && width < 768;
+
   return (
     <footer style={{ background: 'var(--lagoon)' }}>
       <div style={{
-        padding: '28px 40px',
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        padding: isMobile ? '28px 20px' : '28px 40px',
+        display: 'flex',
+        flexDirection: isMobile ? 'column' : 'row',
+        alignItems: isMobile ? 'flex-start' : 'center',
+        justifyContent: 'space-between',
+        gap: isMobile ? 20 : 0,
+        textAlign: isMobile ? 'center' : 'left',
       }}>
-        <div>
+        <div style={{ width: isMobile ? '100%' : 'auto', display: 'flex', flexDirection: 'column', alignItems: isMobile ? 'center' : 'flex-start' }}>
           <Logo variant="dark" size="md" />
           <p style={{
             fontFamily: 'Syne, system-ui, sans-serif',
@@ -27,7 +37,7 @@ export default function Footer() {
           </p>
         </div>
 
-        <div style={{ display: 'flex', gap: 24 }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, justifyContent: isMobile ? 'center' : 'flex-end' }}>
           {FOOTER_LINKS.map(link => (
             <Link key={link.href} href={link.href} style={{
               fontFamily: 'Syne, system-ui, sans-serif',
