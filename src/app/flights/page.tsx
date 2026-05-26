@@ -1,6 +1,6 @@
 'use client';
 import { useState, Suspense } from 'react';
-import { PlaneLanding, Filter, X } from 'lucide-react';
+import { PlaneLanding } from 'lucide-react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { useWindowSize } from '@/hooks/useWindowSize';
@@ -38,7 +38,7 @@ function FlightsContent() {
   const [sortBy, setSortBy] = useState('cheapest');
   const [timeFilter, setTimeFilter] = useState('all');
   const [routeFilter, setRouteFilter] = useState(initialRoute);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [showFilters, setShowFilters] = useState(false);
 
   const width = useWindowSize();
   const isMobile = width > 0 && width < 768;
@@ -65,7 +65,9 @@ function FlightsContent() {
     return { bg: 'var(--seafoam)', color: 'var(--lagoon)' };
   };
 
-  const SidebarContent = () => (
+  const hasActiveFilters = sortBy !== 'cheapest' || routeFilter !== 'all' || maxPrice < 5000 || timeFilter !== 'all';
+
+  const DesktopSidebar = () => (
     <div style={{ background: 'white', borderRadius: 12, border: '1px solid var(--border)', padding: 20, height: 'fit-content' }}>
       <div style={{ background: 'var(--seafoam)', borderRadius: 20, padding: '6px 14px', display: 'inline-block', marginBottom: 20 }}>
         <span style={{ fontFamily: 'Syne', fontWeight: 600, fontSize: 12, color: 'var(--lagoon)' }}>✈ Sunlight Air only</span>
@@ -108,15 +110,6 @@ function FlightsContent() {
           {section.content}
         </div>
       ))}
-
-      {isMobile && (
-        <button
-          onClick={() => setSidebarOpen(false)}
-          style={{ width: '100%', background: 'var(--lagoon)', color: 'white', border: 'none', borderRadius: 8, padding: '12px', fontFamily: 'Syne', fontWeight: 800, fontSize: 14, cursor: 'pointer', marginTop: 8 }}
-        >
-          Apply filters ({filtered.length} results)
-        </button>
-      )}
     </div>
   );
 
@@ -139,31 +132,127 @@ function FlightsContent() {
       <div style={{ background: 'var(--seafoam)', padding: isMobile ? '20px 16px' : '32px 40px', minHeight: '60vh' }}>
         <div style={{ maxWidth: 1100, margin: '0 auto' }}>
 
-          {/* Mobile filter button */}
+          {/* Mobile filter bar */}
           {isMobile && (
-            <button
-              onClick={() => setSidebarOpen(true)}
-              style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'white', border: '1px solid var(--border)', borderRadius: 8, padding: '10px 16px', fontFamily: 'Syne', fontWeight: 600, fontSize: 13, color: 'var(--nightsurf)', cursor: 'pointer', marginBottom: 16 }}
-            >
-              <Filter size={16} color="var(--lagoon)" />
-              Filters
-            </button>
+            <div style={{ marginBottom: 16 }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: showFilters ? 12 : 0 }}>
+                <p style={{ fontFamily: 'Syne', fontWeight: 400, fontSize: 13, color: 'var(--lagoon-muted)', margin: 0 }}>
+                  {filtered.length} flights found
+                </p>
+                <button
+                  onClick={() => setShowFilters(f => !f)}
+                  style={{
+                    background: showFilters ? 'var(--lagoon)' : 'white',
+                    color: showFilters ? 'white' : 'var(--lagoon)',
+                    border: '1px solid var(--lagoon)',
+                    borderRadius: 20, padding: '8px 16px',
+                    fontFamily: 'Syne', fontWeight: 600, fontSize: 13,
+                    cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6,
+                  }}
+                >
+                  {showFilters ? '✕ Close' : '⚙ Filters'}
+                  {!showFilters && hasActiveFilters && (
+                    <span style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--coral)', display: 'inline-block' }} />
+                  )}
+                </button>
+              </div>
+
+              {showFilters && (
+                <div style={{
+                  background: 'white', border: '1px solid var(--border)',
+                  borderRadius: 12, padding: 16,
+                  display: 'flex', flexDirection: 'column', gap: 16,
+                }}>
+                  {/* Sort */}
+                  <div>
+                    <p style={{ fontFamily: 'Syne', fontWeight: 600, fontSize: 10, color: 'var(--lagoon-muted)', textTransform: 'uppercase', letterSpacing: 1.5, marginBottom: 8 }}>Sort by</p>
+                    <select value={sortBy} onChange={e => setSortBy(e.target.value)}
+                      style={{ width: '100%', padding: '10px', fontFamily: 'Syne', fontSize: 14, border: '1px solid var(--border)', borderRadius: 8 }}>
+                      <option value="cheapest">Cheapest first</option>
+                      <option value="time">Departure time</option>
+                    </select>
+                  </div>
+
+                  {/* Route */}
+                  <div>
+                    <p style={{ fontFamily: 'Syne', fontWeight: 600, fontSize: 10, color: 'var(--lagoon-muted)', textTransform: 'uppercase', letterSpacing: 1.5, marginBottom: 8 }}>Route</p>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                      {[['all','All routes'],['ceb','Cebu ↔ Siargao'],['crk','Clark ↔ Siargao']].map(([v,l]) => (
+                        <button key={v} onClick={() => setRouteFilter(v)}
+                          style={{
+                            padding: '10px', fontFamily: 'Syne', fontSize: 13,
+                            background: routeFilter === v ? 'var(--lagoon)' : 'var(--seafoam)',
+                            color: routeFilter === v ? 'white' : 'var(--lagoon-muted)',
+                            border: 'none', borderRadius: 8, cursor: 'pointer', textAlign: 'left',
+                          }}>
+                          {l}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Price */}
+                  <div>
+                    <p style={{ fontFamily: 'Syne', fontWeight: 600, fontSize: 10, color: 'var(--lagoon-muted)', textTransform: 'uppercase', letterSpacing: 1.5, marginBottom: 8 }}>Price range</p>
+                    <input type="range" min={0} max={5000} step={50}
+                      value={maxPrice} onChange={e => setMaxPrice(Number(e.target.value))}
+                      style={{ width: '100%', accentColor: 'var(--lagoon)' }} />
+                    <p style={{ fontFamily: 'Syne', fontWeight: 800, fontSize: 13, color: 'var(--lagoon)', marginTop: 4 }}>Up to ₱{maxPrice.toLocaleString()}</p>
+                  </div>
+
+                  {/* Departure time */}
+                  <div>
+                    <p style={{ fontFamily: 'Syne', fontWeight: 600, fontSize: 10, color: 'var(--lagoon-muted)', textTransform: 'uppercase', letterSpacing: 1.5, marginBottom: 8 }}>Departure time</p>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6 }}>
+                      {[['all','All times'],['morning','Morning 6–12'],['afternoon','Afternoon 12–18'],['evening','Evening 18+']].map(([v,l]) => (
+                        <button key={v} onClick={() => setTimeFilter(v)}
+                          style={{
+                            padding: '10px 8px', fontFamily: 'Syne', fontSize: 12,
+                            background: timeFilter === v ? 'var(--lagoon)' : 'var(--seafoam)',
+                            color: timeFilter === v ? 'white' : 'var(--lagoon-muted)',
+                            border: 'none', borderRadius: 8, cursor: 'pointer',
+                          }}>
+                          {l}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Apply */}
+                  <button onClick={() => setShowFilters(false)}
+                    style={{
+                      background: 'var(--coral)', color: 'white', border: 'none',
+                      borderRadius: 10, padding: '14px',
+                      fontFamily: 'Syne', fontWeight: 800, fontSize: 14, cursor: 'pointer',
+                    }}>
+                    Show {filtered.length} flights →
+                  </button>
+                </div>
+              )}
+            </div>
           )}
 
           <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '220px 1fr', gap: 24 }}>
-            {/* Sidebar — desktop always visible, mobile overlay */}
-            {!isMobile && <SidebarContent />}
+            {/* Desktop sidebar */}
+            {!isMobile && <DesktopSidebar />}
 
             {/* Results */}
             <div>
-              <p style={{ fontFamily: 'Syne', fontWeight: 400, fontSize: 13, color: 'var(--lagoon-muted)', marginBottom: 16 }}>
-                {filtered.length} Sunlight Air flights found
-              </p>
+              {!isMobile && (
+                <p style={{ fontFamily: 'Syne', fontWeight: 400, fontSize: 13, color: 'var(--lagoon-muted)', marginBottom: 16 }}>
+                  {filtered.length} Sunlight Air flights found
+                </p>
+              )}
               <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                 {filtered.map((f) => {
                   const bs = badgeStyle(f.badgeType);
                   return (
-                    <div key={f.id} style={{ background: 'white', borderRadius: 12, border: `${f.badgeType === 'best' ? '2px' : '1px'} solid ${f.badgeType === 'best' ? 'var(--lagoon)' : 'var(--border)'}`, padding: isMobile ? 16 : 20, position: 'relative' }}>
+                    <div key={f.id} style={{
+                      background: 'white', borderRadius: 12,
+                      border: `${f.badgeType === 'best' ? '2px' : '1px'} solid ${f.badgeType === 'best' ? 'var(--lagoon)' : 'var(--border)'}`,
+                      padding: isMobile ? 16 : 20,
+                      position: 'relative',
+                    }}>
                       {f.badge && (
                         <span style={{ position: 'absolute', top: 12, right: 16, background: bs.bg, color: bs.color, borderRadius: 20, padding: '4px 10px', fontFamily: 'Syne', fontWeight: 600, fontSize: 11 }}>
                           {f.badge}
@@ -171,29 +260,50 @@ function FlightsContent() {
                       )}
 
                       {isMobile ? (
-                        /* Mobile: stacked */
-                        <div>
-                          <p style={{ fontFamily: 'Syne', fontWeight: 600, fontSize: 12, color: 'var(--lagoon-muted)', marginBottom: 10 }}>Sunlight Air · direct · {f.duration}</p>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
+                        /* Mobile: vertical layout */
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                          {/* Logo + airline info */}
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                            <div style={{ width: 40, height: 40, borderRadius: 8, overflow: 'hidden', flexShrink: 0, border: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'white' }}>
+                              <img
+                                src="https://airhex.com/images/airline-logos/square/sunlight-air.png"
+                                alt="Sunlight Air"
+                                style={{ width: 36, height: 36, objectFit: 'contain' }}
+                                onError={(e) => {
+                                  e.currentTarget.style.display = 'none';
+                                  e.currentTarget.parentElement!.innerHTML =
+                                    '<span style="fontFamily:Syne,sans-serif;fontWeight:800;fontSize:11px;color:#0A5C54">SA</span>';
+                                }}
+                              />
+                            </div>
                             <div>
-                              <p style={{ fontFamily: 'Syne', fontWeight: 800, fontSize: 22, color: 'var(--nightsurf)', margin: 0 }}>{f.depart}</p>
+                              <p style={{ fontFamily: 'Syne', fontWeight: 600, fontSize: 12, color: 'var(--lagoon-muted)', margin: 0 }}>Sunlight Air</p>
+                              <p style={{ fontFamily: 'Syne', fontWeight: 400, fontSize: 11, color: 'var(--lagoon-muted)', margin: 0 }}>Direct · {f.duration}</p>
+                            </div>
+                          </div>
+
+                          {/* Times + route */}
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                            <div>
+                              <p style={{ fontFamily: 'Syne', fontWeight: 800, fontSize: 24, color: 'var(--nightsurf)', margin: 0 }}>{f.depart}</p>
                               <p style={{ fontFamily: 'Syne', fontWeight: 700, fontSize: 13, color: 'var(--lagoon)', margin: 0 }}>{f.from}</p>
                             </div>
-                            <PlaneLanding size={16} color="var(--lagoon-muted)" />
+                            <PlaneLanding size={18} color="var(--lagoon-muted)" />
                             <div>
-                              <p style={{ fontFamily: 'Syne', fontWeight: 800, fontSize: 22, color: 'var(--nightsurf)', margin: 0 }}>{f.arrive}</p>
+                              <p style={{ fontFamily: 'Syne', fontWeight: 800, fontSize: 24, color: 'var(--nightsurf)', margin: 0 }}>{f.arrive}</p>
                               <p style={{ fontFamily: 'Syne', fontWeight: 700, fontSize: 13, color: 'var(--lagoon)', margin: 0 }}>{f.to}</p>
                             </div>
                           </div>
-                          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 12, borderTop: '1px solid var(--border)', paddingTop: 12 }}>
+
+                          {/* Price + Book side by side */}
+                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px solid var(--border)', paddingTop: 12, marginTop: 4 }}>
                             <div>
-                              <p style={{ fontFamily: 'Syne', fontWeight: 400, fontSize: 11, color: 'var(--lagoon-muted)', margin: 0 }}>from</p>
-                              <p style={{ fontFamily: 'Syne', fontWeight: 800, fontSize: 24, color: 'var(--lagoon)', margin: 0 }}>₱{f.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</p>
-                              <p style={{ fontFamily: 'Syne', fontWeight: 400, fontSize: 11, color: 'var(--lagoon-muted)', margin: 0 }}>per person</p>
+                              <p style={{ fontFamily: 'Syne', fontWeight: 800, fontSize: 24, color: 'var(--lagoon)', margin: 0 }}>₱{f.price.toLocaleString()}</p>
+                              <p style={{ fontFamily: 'Syne', fontSize: 11, color: 'var(--lagoon-muted)', margin: 0 }}>per person</p>
                             </div>
                             <Link
                               href={`/booking?from=${f.from}&to=${f.to}&depart=${f.depart}&arrive=${f.arrive}&duration=${encodeURIComponent(f.duration)}&price=${f.price}&departDate=${departParam}${returnParam ? '&returnDate='+returnParam : ''}`}
-                              style={{ background: 'var(--lagoon)', color: 'white', borderRadius: 8, padding: '12px 20px', fontFamily: 'Syne', fontWeight: 800, fontSize: 13, textDecoration: 'none', display: 'inline-block' }}
+                              style={{ background: 'var(--lagoon)', color: 'white', borderRadius: 8, padding: '12px 20px', fontFamily: 'Syne', fontWeight: 800, fontSize: 13, textDecoration: 'none' }}
                             >
                               Book now →
                             </Link>
@@ -255,21 +365,6 @@ function FlightsContent() {
           </div>
         </div>
       </div>
-
-      {/* Mobile sidebar overlay */}
-      {isMobile && sidebarOpen && (
-        <div style={{ position: 'fixed', inset: 0, zIndex: 100, background: 'rgba(0,0,0,0.4)', display: 'flex', alignItems: 'flex-end' }}>
-          <div style={{ background: 'var(--seafoam)', borderRadius: '20px 20px 0 0', width: '100%', maxHeight: '85vh', overflowY: 'auto', padding: 20 }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-              <p style={{ fontFamily: 'Syne', fontWeight: 800, fontSize: 16, color: 'var(--nightsurf)', margin: 0 }}>Filters</p>
-              <button onClick={() => setSidebarOpen(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 4 }}>
-                <X size={22} color="var(--nightsurf)" />
-              </button>
-            </div>
-            <SidebarContent />
-          </div>
-        </div>
-      )}
     </div>
   );
 }
