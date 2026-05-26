@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { PlaneLanding, Bell, ChevronRight, Waves, Music, Trees, Droplets, BookOpen, Calendar } from 'lucide-react';
 import DatePicker from '@/components/DatePicker';
+import { useWindowSize } from '@/hooks/useWindowSize';
 
 // --- DONNÉES ---
 const ROUTES = [
@@ -78,16 +79,10 @@ function DealCard({ type, from, to, airline, dates, duration, price, label, urge
           <span style={{ fontFamily: 'Syne', fontWeight: 800, fontSize: 20, color: 'var(--lagoon)' }}>{to}</span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-          <span style={{ fontFamily: 'Syne', fontWeight: 800, fontSize: 18, color: 'var(--nightsurf)' }}>
-            {depart}
-          </span>
+          <span style={{ fontFamily: 'Syne', fontWeight: 800, fontSize: 18, color: 'var(--nightsurf)' }}>{depart}</span>
           <span style={{ fontFamily: 'Syne', fontSize: 12, color: 'var(--lagoon-muted)' }}>→</span>
-          <span style={{ fontFamily: 'Syne', fontWeight: 800, fontSize: 18, color: 'var(--nightsurf)' }}>
-            {arrive}
-          </span>
-          <span style={{ fontFamily: 'Syne', fontSize: 11, color: 'var(--lagoon-muted)', marginLeft: 4 }}>
-            · {duration}
-          </span>
+          <span style={{ fontFamily: 'Syne', fontWeight: 800, fontSize: 18, color: 'var(--nightsurf)' }}>{arrive}</span>
+          <span style={{ fontFamily: 'Syne', fontSize: 11, color: 'var(--lagoon-muted)', marginLeft: 4 }}>· {duration}</span>
         </div>
         <p style={{ fontFamily: 'Syne', fontWeight: 600, fontSize: 13, color: 'var(--nightsurf)', marginBottom: 2 }}>✈ {airline}</p>
         <p style={{ fontFamily: 'Syne', fontWeight: 400, fontSize: 12, color: 'var(--lagoon-muted)', marginBottom: 16 }}>{dates} · {duration}</p>
@@ -120,14 +115,16 @@ export default function HomePage() {
   const [departDate, setDepartDate] = useState('');
   const [returnDate, setReturnDate] = useState('');
   const [pax, setPax] = useState('2');
+  const width = useWindowSize();
+  const isMobile = width > 0 && width < 768;
 
   return (
     <div>
       {/* HERO */}
-      <section style={{ background: 'var(--nightsurf)', padding: '64px 40px 80px' }}>
+      <section style={{ background: 'var(--nightsurf)', padding: isMobile ? '40px 20px 48px' : '64px 40px 80px' }}>
         <div style={{ maxWidth: 860, margin: '0 auto' }}>
           {/* Badges */}
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 28 }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 20 }}>
             {[
               { bg: 'var(--seafoam)', color: 'var(--lagoon)', border: 'rgba(10,92,84,0.25)', text: '🌊 #1 surf island SEA' },
               { bg: 'var(--golden-light)', color: '#7A5A00', border: 'rgba(232,180,74,0.4)', text: '⚡ Exclusive Sunlight Air deals' },
@@ -140,11 +137,11 @@ export default function HomePage() {
           </div>
 
           {/* Headline */}
-          <h1 style={{ fontFamily: 'Syne', fontWeight: 800, fontSize: 52, lineHeight: 1.1, marginBottom: 16 }}>
+          <h1 style={{ fontFamily: 'Syne', fontWeight: 800, fontSize: isMobile ? 32 : 52, lineHeight: 1.1, marginBottom: 12 }}>
             <span style={{ color: 'white', display: 'block' }}>We find the deal.</span>
             <span style={{ color: 'var(--golden)', display: 'block' }}>You catch the wave.</span>
           </h1>
-          <p style={{ fontFamily: 'Syne', fontWeight: 400, fontSize: 16, color: 'rgba(255,255,255,0.5)', marginBottom: 32, lineHeight: 1.6 }}>
+          <p style={{ fontFamily: 'Syne', fontWeight: 400, fontSize: isMobile ? 14 : 16, color: 'rgba(255,255,255,0.5)', marginBottom: 24, lineHeight: 1.6 }}>
             The go-to for flights to — and from — Siargao.<br />
             Compare every route, find the best price, book in seconds.
           </p>
@@ -153,7 +150,7 @@ export default function HomePage() {
           <div style={{
             background: 'white', borderRadius: 16,
             border: '1px solid var(--border)', overflow: 'visible',
-            marginTop: 32, position: 'relative', zIndex: 10,
+            marginTop: 24, position: 'relative', zIndex: 10,
           }}>
             {/* Direction Toggle */}
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr' }}>
@@ -162,163 +159,158 @@ export default function HomePage() {
                   key={d}
                   onClick={() => { setDirection(d); setSelectedCity(''); }}
                   style={{
-                    padding: '14px', fontFamily: 'Syne', fontWeight: 800, fontSize: 14,
+                    padding: isMobile ? '12px 8px' : '14px', fontFamily: 'Syne', fontWeight: 800, fontSize: isMobile ? 12 : 14,
                     background: direction === d ? 'var(--lagoon)' : 'var(--seafoam)',
                     color: direction === d ? 'white' : 'var(--lagoon-muted)',
                     border: 'none', cursor: 'pointer',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: isMobile ? 4 : 8,
                     borderRadius: d === 'to' ? '16px 0 0 0' : '0 16px 0 0',
                   }}
                 >
                   {d === 'to' ? '🛬' : '🛫'}
-                  {d === 'to' ? 'Flying to Siargao' : 'Flying from Siargao'}
+                  {d === 'to' ? (isMobile ? 'To Siargao' : 'Flying to Siargao') : (isMobile ? 'From Siargao' : 'Flying from Siargao')}
                 </button>
               ))}
             </div>
 
-            {/* Fields row */}
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: '140px 1fr 1fr 1fr 1fr auto',
-              borderTop: '1px solid var(--border)',
-            }}>
-              {/* Locked IAO */}
-              <div style={{
-                padding: '14px 16px',
-                background: 'var(--seafoam)',
-                borderRight: '1px solid var(--border)',
-              }}>
-                <p style={{ fontFamily: 'Syne', fontSize: 10, color: 'var(--lagoon-muted)', textTransform: 'uppercase', letterSpacing: 1, margin: '0 0 4px', display: 'flex', alignItems: 'center', gap: 4 }}>
-                  🔒 {direction === 'to' ? 'Destination' : 'Departure'}
-                </p>
-                <p style={{ fontFamily: 'Syne', fontWeight: 800, fontSize: 20, color: 'var(--lagoon)', margin: 0 }}>IAO</p>
-                <p style={{ fontFamily: 'Syne', fontSize: 10, color: 'var(--lagoon-muted)', fontStyle: 'italic', margin: 0 }}>Always Siargao</p>
-              </div>
-
-              {/* City selector — SIMPLE SELECT */}
-              <div style={{ padding: '14px 16px', borderRight: '1px solid var(--border)' }}>
-                <p style={{ fontFamily: 'Syne', fontSize: 10, color: 'var(--lagoon-muted)', textTransform: 'uppercase', letterSpacing: 1, margin: '0 0 4px' }}>
-                  {direction === 'to' ? 'Flying from' : 'Flying to'}
-                </p>
-                <select
-                  value={selectedCity}
-                  onChange={e => setSelectedCity(e.target.value)}
-                  style={{
-                    fontFamily: 'Syne',
-                    fontWeight: selectedCity ? 700 : 400,
-                    fontSize: 14,
-                    color: selectedCity ? 'var(--nightsurf)' : 'var(--lagoon-muted)',
-                    border: 'none', outline: 'none',
-                    background: 'transparent',
-                    width: '100%', cursor: 'pointer',
-                    appearance: 'auto',
+            {/* Fields */}
+            {isMobile ? (
+              /* Mobile: stacked vertically */
+              <div style={{ display: 'flex', flexDirection: 'column', borderTop: '1px solid var(--border)' }}>
+                {/* Locked IAO */}
+                <div style={{ padding: '12px 16px', background: 'var(--seafoam)', borderBottom: '1px solid var(--border)' }}>
+                  <p style={{ fontFamily: 'Syne', fontSize: 10, color: 'var(--lagoon-muted)', textTransform: 'uppercase', letterSpacing: 1, margin: '0 0 2px', display: 'flex', alignItems: 'center', gap: 4 }}>
+                    🔒 {direction === 'to' ? 'Destination' : 'Departure'}
+                  </p>
+                  <p style={{ fontFamily: 'Syne', fontWeight: 800, fontSize: 18, color: 'var(--lagoon)', margin: 0 }}>IAO — Always Siargao</p>
+                </div>
+                {/* City */}
+                <div style={{ padding: '12px 16px', borderBottom: '1px solid var(--border)' }}>
+                  <p style={{ fontFamily: 'Syne', fontSize: 10, color: 'var(--lagoon-muted)', textTransform: 'uppercase', letterSpacing: 1, margin: '0 0 4px' }}>
+                    {direction === 'to' ? 'Flying from' : 'Flying to'}
+                  </p>
+                  <select
+                    value={selectedCity}
+                    onChange={e => setSelectedCity(e.target.value)}
+                    style={{ fontFamily: 'Syne', fontWeight: selectedCity ? 700 : 400, fontSize: 14, color: selectedCity ? 'var(--nightsurf)' : 'var(--lagoon-muted)', border: 'none', outline: 'none', background: 'transparent', width: '100%', cursor: 'pointer' }}
+                  >
+                    <option value="">Choose a city...</option>
+                    <option value="CEB">Cebu (CEB) — Mactan-Cebu Intl</option>
+                    <option value="CRK">Clark (CRK) — Clark International</option>
+                    {direction === 'from' && <option value="IAO">Siargao (IAO) — Sayak Airport</option>}
+                  </select>
+                </div>
+                {/* Departure date */}
+                <div style={{ borderBottom: '1px solid var(--border)' }}>
+                  <DatePicker label="DEPARTURE" value={departDate} onChange={setDepartDate} minDate={new Date().toISOString().split('T')[0]} placeholder="Select date" />
+                </div>
+                {/* Return date */}
+                <div style={{ borderBottom: '1px solid var(--border)' }}>
+                  <DatePicker label="RETURN" value={returnDate} onChange={setReturnDate} minDate={departDate || new Date().toISOString().split('T')[0]} placeholder="Select date"
+                    subLabel={departDate && returnDate ? `${Math.round((new Date(returnDate).getTime() - new Date(departDate).getTime()) / 86400000)} nights` : undefined}
+                  />
+                </div>
+                {/* Passengers */}
+                <div style={{ padding: '12px 16px', borderBottom: '1px solid var(--border)' }}>
+                  <p style={{ fontFamily: 'Syne', fontSize: 10, color: 'var(--lagoon-muted)', textTransform: 'uppercase', letterSpacing: 1, margin: '0 0 4px' }}>Passengers</p>
+                  <select value={pax} onChange={e => setPax(e.target.value)} style={{ fontFamily: 'Syne', fontWeight: 600, fontSize: 14, color: 'var(--nightsurf)', border: 'none', outline: 'none', background: 'transparent', cursor: 'pointer' }}>
+                    <option value="1">1 adult</option>
+                    <option value="2">2 adults</option>
+                    <option value="3">3 adults</option>
+                    <option value="4">4 adults</option>
+                    <option value="5">5 adults</option>
+                    <option value="6">6 adults</option>
+                  </select>
+                </div>
+                {/* Search button full width */}
+                <button
+                  onClick={() => {
+                    if (!selectedCity) { alert('Please choose a city first (Cebu or Clark)'); return; }
+                    const routeFilter = selectedCity === 'CRK' ? 'crk' : 'ceb';
+                    const params = new URLSearchParams({ direction, from: direction === 'to' ? selectedCity : 'IAO', to: direction === 'to' ? 'IAO' : selectedCity, routeFilter, ...(departDate && { depart: departDate }), ...(returnDate && { return: returnDate }), pax });
+                    router.push(`/flights?${params.toString()}`);
                   }}
+                  style={{ background: 'var(--coral)', color: 'white', border: 'none', cursor: 'pointer', padding: '16px', fontFamily: 'Syne', fontWeight: 800, fontSize: 15, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, borderRadius: '0 0 16px 16px' }}
                 >
-                  <option value="">Choose a city...</option>
-                  <option value="CEB">Cebu (CEB) — Mactan-Cebu Intl</option>
-                  <option value="CRK">Clark (CRK) — Clark International</option>
-                  {direction === 'from' && <option value="IAO">Siargao (IAO) — Sayak Airport</option>}
-                </select>
-                {!selectedCity && (
-                  <p style={{ fontFamily: 'Syne', fontSize: 11, color: 'var(--lagoon-muted)', margin: '2px 0 0' }}>Cebu · Clark</p>
-                )}
+                  🔍 SEARCH FLIGHTS
+                </button>
               </div>
-
-              {/* Departure date */}
-              <div style={{ borderRight: '1px solid var(--border)' }}>
-                <DatePicker
-                  label="DEPARTURE"
-                  value={departDate}
-                  onChange={setDepartDate}
-                  minDate={new Date().toISOString().split('T')[0]}
-                  placeholder="Select date"
-                />
-              </div>
-
-              {/* Return date */}
-              <div style={{ borderRight: '1px solid var(--border)' }}>
-                <DatePicker
-                  label="RETURN"
-                  value={returnDate}
-                  onChange={setReturnDate}
-                  minDate={departDate || new Date().toISOString().split('T')[0]}
-                  placeholder="Select date"
-                  subLabel={
-                    departDate && returnDate
-                      ? `${Math.round((new Date(returnDate).getTime() - new Date(departDate).getTime()) / 86400000)} nights`
-                      : undefined
-                  }
-                />
-              </div>
-
-              {/* Passengers */}
-              <div style={{ padding: '14px 16px', borderRight: '1px solid var(--border)' }}>
-                <p style={{ fontFamily: 'Syne', fontSize: 10, color: 'var(--lagoon-muted)', textTransform: 'uppercase', letterSpacing: 1, margin: '0 0 4px' }}>Passengers</p>
-                <select
-                  value={pax}
-                  onChange={e => setPax(e.target.value)}
-                  style={{
-                    fontFamily: 'Syne', fontWeight: 600, fontSize: 13,
-                    color: 'var(--nightsurf)', border: 'none', outline: 'none',
-                    background: 'transparent', cursor: 'pointer', appearance: 'auto',
+            ) : (
+              /* Desktop: horizontal row */
+              <div style={{ display: 'grid', gridTemplateColumns: '140px 1fr 1fr 1fr 1fr auto', borderTop: '1px solid var(--border)' }}>
+                {/* Locked IAO */}
+                <div style={{ padding: '14px 16px', background: 'var(--seafoam)', borderRight: '1px solid var(--border)' }}>
+                  <p style={{ fontFamily: 'Syne', fontSize: 10, color: 'var(--lagoon-muted)', textTransform: 'uppercase', letterSpacing: 1, margin: '0 0 4px', display: 'flex', alignItems: 'center', gap: 4 }}>
+                    🔒 {direction === 'to' ? 'Destination' : 'Departure'}
+                  </p>
+                  <p style={{ fontFamily: 'Syne', fontWeight: 800, fontSize: 20, color: 'var(--lagoon)', margin: 0 }}>IAO</p>
+                  <p style={{ fontFamily: 'Syne', fontSize: 10, color: 'var(--lagoon-muted)', fontStyle: 'italic', margin: 0 }}>Always Siargao</p>
+                </div>
+                {/* City selector */}
+                <div style={{ padding: '14px 16px', borderRight: '1px solid var(--border)' }}>
+                  <p style={{ fontFamily: 'Syne', fontSize: 10, color: 'var(--lagoon-muted)', textTransform: 'uppercase', letterSpacing: 1, margin: '0 0 4px' }}>
+                    {direction === 'to' ? 'Flying from' : 'Flying to'}
+                  </p>
+                  <select value={selectedCity} onChange={e => setSelectedCity(e.target.value)} style={{ fontFamily: 'Syne', fontWeight: selectedCity ? 700 : 400, fontSize: 14, color: selectedCity ? 'var(--nightsurf)' : 'var(--lagoon-muted)', border: 'none', outline: 'none', background: 'transparent', width: '100%', cursor: 'pointer', appearance: 'auto' }}>
+                    <option value="">Choose a city...</option>
+                    <option value="CEB">Cebu (CEB) — Mactan-Cebu Intl</option>
+                    <option value="CRK">Clark (CRK) — Clark International</option>
+                    {direction === 'from' && <option value="IAO">Siargao (IAO) — Sayak Airport</option>}
+                  </select>
+                  {!selectedCity && <p style={{ fontFamily: 'Syne', fontSize: 11, color: 'var(--lagoon-muted)', margin: '2px 0 0' }}>Cebu · Clark</p>}
+                </div>
+                {/* Departure date */}
+                <div style={{ borderRight: '1px solid var(--border)' }}>
+                  <DatePicker label="DEPARTURE" value={departDate} onChange={setDepartDate} minDate={new Date().toISOString().split('T')[0]} placeholder="Select date" />
+                </div>
+                {/* Return date */}
+                <div style={{ borderRight: '1px solid var(--border)' }}>
+                  <DatePicker label="RETURN" value={returnDate} onChange={setReturnDate} minDate={departDate || new Date().toISOString().split('T')[0]} placeholder="Select date"
+                    subLabel={departDate && returnDate ? `${Math.round((new Date(returnDate).getTime() - new Date(departDate).getTime()) / 86400000)} nights` : undefined}
+                  />
+                </div>
+                {/* Passengers */}
+                <div style={{ padding: '14px 16px', borderRight: '1px solid var(--border)' }}>
+                  <p style={{ fontFamily: 'Syne', fontSize: 10, color: 'var(--lagoon-muted)', textTransform: 'uppercase', letterSpacing: 1, margin: '0 0 4px' }}>Passengers</p>
+                  <select value={pax} onChange={e => setPax(e.target.value)} style={{ fontFamily: 'Syne', fontWeight: 600, fontSize: 13, color: 'var(--nightsurf)', border: 'none', outline: 'none', background: 'transparent', cursor: 'pointer', appearance: 'auto' }}>
+                    <option value="1">1 adult</option>
+                    <option value="2">2 adults</option>
+                    <option value="3">3 adults</option>
+                    <option value="4">4 adults</option>
+                    <option value="5">5 adults</option>
+                    <option value="6">6 adults</option>
+                  </select>
+                  <p style={{ fontFamily: 'Syne', fontSize: 11, color: 'var(--lagoon-muted)', margin: '2px 0 0' }}>Economy</p>
+                </div>
+                {/* Search button */}
+                <button
+                  onClick={() => {
+                    if (!selectedCity) { alert('Please choose a city first (Cebu or Clark)'); return; }
+                    const routeFilter = selectedCity === 'CRK' ? 'crk' : 'ceb';
+                    const params = new URLSearchParams({ direction, from: direction === 'to' ? selectedCity : 'IAO', to: direction === 'to' ? 'IAO' : selectedCity, routeFilter, ...(departDate && { depart: departDate }), ...(returnDate && { return: returnDate }), pax });
+                    router.push(`/flights?${params.toString()}`);
                   }}
+                  style={{ background: 'var(--coral)', color: 'white', border: 'none', cursor: 'pointer', padding: '0 28px', fontFamily: 'Syne', fontWeight: 800, fontSize: 14, display: 'flex', alignItems: 'center', gap: 8, borderRadius: '0 0 16px 0' }}
                 >
-                  <option value="1">1 adult</option>
-                  <option value="2">2 adults</option>
-                  <option value="3">3 adults</option>
-                  <option value="4">4 adults</option>
-                  <option value="5">5 adults</option>
-                  <option value="6">6 adults</option>
-                </select>
-                <p style={{ fontFamily: 'Syne', fontSize: 11, color: 'var(--lagoon-muted)', margin: '2px 0 0' }}>Economy</p>
+                  🔍 SEARCH
+                </button>
               </div>
-
-              {/* Search button */}
-              <button
-                onClick={() => {
-                  if (!selectedCity) {
-                    alert('Please choose a city first (Cebu or Clark)');
-                    return;
-                  }
-                  const routeFilter = selectedCity === 'CRK' ? 'crk' : 'ceb';
-                  const params = new URLSearchParams({
-                    direction,
-                    from: direction === 'to' ? selectedCity : 'IAO',
-                    to: direction === 'to' ? 'IAO' : selectedCity,
-                    routeFilter,
-                    ...(departDate && { depart: departDate }),
-                    ...(returnDate && { return: returnDate }),
-                    pax,
-                  });
-                  router.push(`/flights?${params.toString()}`);
-                }}
-                style={{
-                  background: 'var(--coral)', color: 'white',
-                  border: 'none', cursor: 'pointer',
-                  padding: '0 28px',
-                  fontFamily: 'Syne', fontWeight: 800, fontSize: 14,
-                  display: 'flex', alignItems: 'center', gap: 8,
-                  borderRadius: '0 0 16px 0',
-                }}
-              >
-                🔍 SEARCH
-              </button>
-            </div>
+            )}
           </div>
         </div>
       </section>
 
       {/* BODY */}
-      <div style={{ background: 'var(--seafoam)', padding: '48px 40px' }}>
-        <div style={{ maxWidth: 1100, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 48 }}>
+      <div style={{ background: 'var(--seafoam)', padding: isMobile ? '32px 16px' : '48px 40px' }}>
+        <div style={{ maxWidth: 1100, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 40 }}>
 
           {/* DEALS */}
           <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-              <h2 style={{ fontFamily: 'Syne', fontWeight: 800, fontSize: 22, color: 'var(--nightsurf)' }}>🔥 Deals right now</h2>
-              <Link href="/deals" style={{ fontFamily: 'Syne', fontWeight: 600, fontSize: 13, color: 'var(--lagoon)', textDecoration: 'none' }}>See all deals →</Link>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+              <h2 style={{ fontFamily: 'Syne', fontWeight: 800, fontSize: 20, color: 'var(--nightsurf)' }}>🔥 Deals right now</h2>
+              <Link href="/deals" style={{ fontFamily: 'Syne', fontWeight: 600, fontSize: 13, color: 'var(--lagoon)', textDecoration: 'none' }}>See all →</Link>
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)', gap: 16 }}>
               <DealCard type="hot" from="CEB" to="IAO" airline="Sunlight Air" dates="Jun 12–19" duration="direct · 55 min" price="₱1,850" label="🔥 Deal on fire · 3 seats left" timerVal={63728} ctaText="Book before it's gone" borderColor="var(--coral)" depart="06:00" arrive="06:55" />
               <DealCard type="top" from="CRK" to="IAO" airline="Sunlight Air" dates="Jul 5–12" duration="direct · 2h 30min" price="₱4,300" label="🕐 Price drops in" timerVal={22533} ctaText="Lock this price" borderColor="var(--lagoon)" depart="07:00" arrive="09:30" />
               <DealCard type="standard" from="IAO" to="CEB" airline="Sunlight Air" dates="Jun 22" duration="direct · 55 min" price="₱1,980" label="👥 43 bookings this month" urgency="Best value" timerVal={0} ctaText="See this deal" borderColor="" depart="07:30" arrive="08:25" />
@@ -326,27 +318,24 @@ export default function HomePage() {
           </div>
 
           {/* ROUTES BAND */}
-          <div style={{ background: 'white', borderRadius: 16, border: '1px solid var(--border)', padding: '24px 28px' }}>
-            <p style={{ fontFamily: 'Syne', fontWeight: 600, fontSize: 10, color: 'var(--lagoon-muted)', textTransform: 'uppercase', letterSpacing: 2, marginBottom: 14 }}>
+          <div style={{ background: 'white', borderRadius: 16, border: '1px solid var(--border)', padding: isMobile ? '18px 16px' : '24px 28px' }}>
+            <p style={{ fontFamily: 'Syne', fontWeight: 600, fontSize: 10, color: 'var(--lagoon-muted)', textTransform: 'uppercase', letterSpacing: 2, marginBottom: 12 }}>
               SUNLIGHT AIR ROUTES — CEB · CRK · IAO
             </p>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
               {ROUTES.map((r, i) => (
-                <Link key={i} href={r.href} style={{
-                  background: 'white', border: '1px solid var(--border)', borderRadius: 20,
-                  padding: '8px 18px', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 6,
-                }}>
+                <Link key={i} href={r.href} style={{ background: 'white', border: '1px solid var(--border)', borderRadius: 20, padding: '8px 14px', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 6 }}>
                   <span style={{ fontSize: 14 }}>{r.icon}</span>
                   <span style={{ fontFamily: 'Syne', fontWeight: 400, fontSize: 13, color: 'var(--nightsurf)' }}>{r.from} ({r.code})</span>
                   <span style={{ fontFamily: 'Syne', fontWeight: 800, fontSize: 13, color: 'var(--lagoon)' }}>{r.price}</span>
-                  <span style={{ fontFamily: 'Syne', fontWeight: 400, fontSize: 12, color: 'var(--lagoon-muted)' }}>· {r.duration} · {r.type}</span>
+                  <span style={{ fontFamily: 'Syne', fontWeight: 400, fontSize: 12, color: 'var(--lagoon-muted)' }}>· {r.duration}</span>
                 </Link>
               ))}
             </div>
           </div>
 
           {/* PRICE ALERT */}
-          <div style={{ background: 'white', border: '1px solid var(--border)', borderRadius: 16, padding: '24px 28px', display: 'flex', alignItems: 'center', gap: 20 }}>
+          <div style={{ background: 'white', border: '1px solid var(--border)', borderRadius: 16, padding: isMobile ? '16px' : '24px 28px', display: 'flex', alignItems: isMobile ? 'flex-start' : 'center', gap: 16, flexDirection: isMobile ? 'column' : 'row' }}>
             <div style={{ width: 44, height: 44, background: 'var(--seafoam)', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
               <Bell size={20} color="var(--lagoon)" />
             </div>
@@ -354,31 +343,31 @@ export default function HomePage() {
               <p style={{ fontFamily: 'Syne', fontWeight: 600, fontSize: 15, color: 'var(--nightsurf)', marginBottom: 4 }}>Never miss a deal to Siargao</p>
               <p style={{ fontFamily: 'Syne', fontWeight: 400, fontSize: 13, color: 'var(--lagoon-muted)' }}>Set your route and budget. We ping you the moment a price drops.</p>
             </div>
-            <button style={{ background: 'var(--lagoon)', color: 'white', border: 'none', borderRadius: 8, padding: '12px 22px', fontFamily: 'Syne', fontWeight: 800, fontSize: 12, cursor: 'pointer', whiteSpace: 'nowrap' }}>
+            <button style={{ background: 'var(--lagoon)', color: 'white', border: 'none', borderRadius: 8, padding: '12px 22px', fontFamily: 'Syne', fontWeight: 800, fontSize: 12, cursor: 'pointer', whiteSpace: 'nowrap', width: isMobile ? '100%' : 'auto' }}>
               🔔 Set price alert
             </button>
           </div>
 
           {/* VIBES */}
           <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
               <h2 style={{ fontFamily: 'Syne', fontWeight: 800, fontSize: 20, color: 'var(--nightsurf)' }}>Where are you heading?</h2>
-              <Link href="/guide" style={{ fontFamily: 'Syne', fontWeight: 600, fontSize: 13, color: 'var(--lagoon)', textDecoration: 'none' }}>Full island guide →</Link>
+              <Link href="/guide" style={{ fontFamily: 'Syne', fontWeight: 600, fontSize: 13, color: 'var(--lagoon)', textDecoration: 'none' }}>Island guide →</Link>
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 14 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(4, 1fr)', gap: 12 }}>
               {VIBES.map((v, i) => (
                 <Link key={i} href="/guide" style={{ textDecoration: 'none' }}>
                   <div style={{ background: 'white', border: '1px solid var(--border)', borderRadius: 12, overflow: 'hidden' }}>
-                    <img src={v.img} alt={v.name} style={{ width: '100%', height: 140, objectFit: 'cover', display: 'block' }} />
-                    <div style={{ padding: 16 }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-                        <div style={{ width: 32, height: 32, background: v.iconBg, borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                          <v.icon size={16} color={v.iconColor} />
+                    <img src={v.img} alt={v.name} style={{ width: '100%', height: isMobile ? 110 : 140, objectFit: 'cover', display: 'block' }} />
+                    <div style={{ padding: isMobile ? 12 : 16 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
+                        <div style={{ width: 28, height: 28, background: v.iconBg, borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                          <v.icon size={14} color={v.iconColor} />
                         </div>
-                        <p style={{ fontFamily: 'Syne', fontWeight: 800, fontSize: 14, color: 'var(--nightsurf)' }}>{v.name}</p>
+                        <p style={{ fontFamily: 'Syne', fontWeight: 800, fontSize: 13, color: 'var(--nightsurf)' }}>{v.name}</p>
                       </div>
-                      <p style={{ fontFamily: 'Syne', fontWeight: 400, fontSize: 12, color: 'var(--lagoon-muted)', lineHeight: 1.5, marginBottom: 10 }}>{v.desc}</p>
-                      <span style={{ background: v.tagBg, color: v.tagColor, borderRadius: 20, padding: '4px 10px', fontFamily: 'Syne', fontWeight: 600, fontSize: 11 }}>{v.tag}</span>
+                      {!isMobile && <p style={{ fontFamily: 'Syne', fontWeight: 400, fontSize: 12, color: 'var(--lagoon-muted)', lineHeight: 1.5, marginBottom: 8 }}>{v.desc}</p>}
+                      <span style={{ background: v.tagBg, color: v.tagColor, borderRadius: 20, padding: '3px 8px', fontFamily: 'Syne', fontWeight: 600, fontSize: 10 }}>{v.tag}</span>
                     </div>
                   </div>
                 </Link>
@@ -387,18 +376,18 @@ export default function HomePage() {
           </div>
 
           {/* GUIDE + CALENDAR */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: 14 }}>
             {[
               { icon: BookOpen, title: 'Complete Siargao travel guide', desc: 'Best routes, cheapest months, insider tips from people who actually live here.', href: '/guide' },
               { icon: Calendar, title: 'Best time to fly — price calendar', desc: 'See the cheapest days month by month. Plan ahead, pay less.', href: '/flights' },
             ].map((card, i) => (
               <Link key={i} href={card.href} style={{ textDecoration: 'none' }}>
-                <div style={{ background: 'var(--seafoam)', border: '1px solid var(--border)', borderRadius: 12, padding: 24, display: 'flex', alignItems: 'flex-start', gap: 16, cursor: 'pointer' }}>
+                <div style={{ background: 'var(--seafoam)', border: '1px solid var(--border)', borderRadius: 12, padding: 20, display: 'flex', alignItems: 'flex-start', gap: 14, cursor: 'pointer' }}>
                   <div style={{ width: 40, height: 40, background: 'var(--lagoon)', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                     <card.icon size={20} color="white" />
                   </div>
                   <div style={{ flex: 1 }}>
-                    <p style={{ fontFamily: 'Syne', fontWeight: 600, fontSize: 15, color: 'var(--nightsurf)', marginBottom: 6 }}>{card.title}</p>
+                    <p style={{ fontFamily: 'Syne', fontWeight: 600, fontSize: 14, color: 'var(--nightsurf)', marginBottom: 4 }}>{card.title}</p>
                     <p style={{ fontFamily: 'Syne', fontWeight: 400, fontSize: 13, color: 'var(--lagoon-muted)', lineHeight: 1.5 }}>{card.desc}</p>
                   </div>
                   <ChevronRight size={18} color="var(--lagoon)" />

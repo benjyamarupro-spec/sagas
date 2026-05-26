@@ -3,6 +3,7 @@ import { useState, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { PlaneLanding, PlaneTakeoff, Check, ChevronRight, Luggage, Users, AlertCircle } from 'lucide-react';
 import Link from 'next/link';
+import { useWindowSize } from '@/hooks/useWindowSize';
 
 // ─── DONNÉES ─────────────────────────────────────────────────────
 
@@ -49,37 +50,38 @@ function formatDate(d: string) {
 
 // ─── STEP INDICATOR ──────────────────────────────────────────────
 
-function StepIndicator({ current, isRoundTrip }: { current:number; isRoundTrip:boolean }) {
+function StepIndicator({ current, isRoundTrip, isMobile }: { current:number; isRoundTrip:boolean; isMobile:boolean }) {
   const steps = isRoundTrip
     ? ['Return flight','Add-ons','Passengers','Review']
     : ['Add-ons','Passengers','Review'];
 
   return (
-    <div style={{ display:'flex', alignItems:'center', marginBottom:32 }}>
+    <div style={{ display:'flex', alignItems:'center', marginBottom: isMobile ? 20 : 32 }}>
       {steps.map((label, i) => {
         const num = i + 1;
         const active = num === current;
         const done = num < current;
+        const circleSize = isMobile ? 28 : 34;
         return (
           <div key={i} style={{ display:'flex', alignItems:'center', flex: i < steps.length-1 ? 1 : 'none' }}>
-            <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:4 }}>
+            <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap: isMobile ? 2 : 4 }}>
               <div style={{
-                width:34, height:34, borderRadius:'50%',
+                width:circleSize, height:circleSize, borderRadius:'50%',
                 background: done||active ? 'var(--lagoon)' : 'var(--seafoam)',
                 border:`2px solid ${done||active ? 'var(--lagoon)' : 'var(--border)'}`,
                 display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0,
               }}>
                 {done
-                  ? <Check size={14} color="white"/>
-                  : <span style={{ fontFamily:'Syne', fontWeight:800, fontSize:13, color:active?'white':'var(--lagoon-muted)' }}>{num}</span>
+                  ? <Check size={isMobile ? 12 : 14} color="white"/>
+                  : <span style={{ fontFamily:'Syne', fontWeight:800, fontSize: isMobile ? 11 : 13, color:active?'white':'var(--lagoon-muted)' }}>{num}</span>
                 }
               </div>
-              <span style={{ fontFamily:'Syne', fontWeight:active?600:400, fontSize:11, color:active?'var(--lagoon)':'var(--lagoon-muted)', whiteSpace:'nowrap' }}>
-                {label}
+              <span style={{ fontFamily:'Syne', fontWeight:active?600:400, fontSize: isMobile ? 9 : 11, color:active?'var(--lagoon)':'var(--lagoon-muted)', whiteSpace:'nowrap' }}>
+                {isMobile ? label.split(' ')[0] : label}
               </span>
             </div>
             {i < steps.length-1 && (
-              <div style={{ flex:1, height:2, background:done?'var(--lagoon)':'var(--border)', margin:'0 6px', marginBottom:18 }}/>
+              <div style={{ flex:1, height:2, background:done?'var(--lagoon)':'var(--border)', margin:'0 4px', marginBottom: isMobile ? 14 : 18 }}/>
             )}
           </div>
         );
@@ -94,7 +96,7 @@ function MiniFlightCard({ label, from, to, depart, arrive, duration, price, date
   return (
     <div style={{ background:'white', border:'2px solid var(--lagoon)', borderRadius:12, padding:'16px 20px', marginBottom:12 }}>
       <p style={{ fontFamily:'Syne', fontWeight:400, fontSize:10, color:'var(--lagoon-muted)', textTransform:'uppercase', letterSpacing:1, margin:'0 0 8px' }}>{label}</p>
-      <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+      <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', flexWrap:'wrap', gap:8 }}>
         <div style={{ display:'flex', alignItems:'center', gap:12 }}>
           <div>
             <p style={{ fontFamily:'Syne', fontWeight:800, fontSize:20, color:'var(--nightsurf)', margin:0 }}>{depart}</p>
@@ -154,7 +156,7 @@ function StepSelectReturn({ outbound, returnDate, onSelect }: any) {
             onMouseEnter={e => { e.currentTarget.style.border='2px solid var(--lagoon)'; e.currentTarget.style.background='var(--seafoam)'; }}
             onMouseLeave={e => { e.currentTarget.style.border='1px solid var(--border)'; e.currentTarget.style.background='white'; }}
           >
-            <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+            <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', flexWrap:'wrap', gap:8 }}>
               <div style={{ display:'flex', alignItems:'center', gap:12 }}>
                 <div style={{ width:36, height:36, background:'var(--seafoam)', borderRadius:8, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
                   <span style={{ fontFamily:'Syne', fontWeight:800, fontSize:12, color:'var(--lagoon)' }}>SA</span>
@@ -263,7 +265,7 @@ function StepAddOns({ baggage, setBaggage, assistance, setAssistance, onNext, on
 
 // ─── STEP PASSENGERS ─────────────────────────────────────────────
 
-function StepPassengers({ passengers, setPassengers, onNext, onBack }: any) {
+function StepPassengers({ passengers, setPassengers, onNext, onBack, isMobile }: any) {
   const update = (i: number, field: string, val: string) => {
     const updated = [...passengers];
     updated[i] = { ...updated[i], [field]: val };
@@ -287,15 +289,17 @@ function StepPassengers({ passengers, setPassengers, onNext, onBack }: any) {
       </div>
 
       {passengers.map((pax: any, i: number) => (
-        <div key={i} style={{ background:'white', border:'1px solid var(--border)', borderRadius:12, padding:24, marginBottom:14 }}>
-          <p style={{ fontFamily:'Syne', fontWeight:800, fontSize:16, color:'var(--lagoon)', marginBottom:18 }}>
+        <div key={i} style={{ background:'white', border:'1px solid var(--border)', borderRadius:12, padding: isMobile ? 16 : 24, marginBottom:14 }}>
+          <p style={{ fontFamily:'Syne', fontWeight:800, fontSize:16, color:'var(--lagoon)', marginBottom:16 }}>
             Passenger {i+1}{passengers.length > 1 ? ` of ${passengers.length}` : ''}
           </p>
-          <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:14, marginBottom:14 }}>
+          {/* First + Last name: always 2 cols */}
+          <div style={{ display:'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap:12, marginBottom:12 }}>
             <div><label style={labelStyle}>First name *</label><input style={inputStyle} placeholder="As on your ID" value={pax.firstName} onChange={e=>update(i,'firstName',e.target.value)}/></div>
             <div><label style={labelStyle}>Last name *</label><input style={inputStyle} placeholder="As on your ID" value={pax.lastName} onChange={e=>update(i,'lastName',e.target.value)}/></div>
           </div>
-          <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:14, marginBottom:14 }}>
+          {/* Gender + DOB + Nationality: 1 col on mobile */}
+          <div style={{ display:'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr 1fr', gap:12, marginBottom:12 }}>
             <div>
               <label style={labelStyle}>Gender *</label>
               <select style={inputStyle} value={pax.gender} onChange={e=>update(i,'gender',e.target.value)}>
@@ -313,7 +317,8 @@ function StepPassengers({ passengers, setPassengers, onNext, onBack }: any) {
               </select>
             </div>
           </div>
-          <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:14 }}>
+          {/* Email + Phone: 1 col on mobile */}
+          <div style={{ display:'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap:12 }}>
             <div><label style={labelStyle}>Email *</label><input style={inputStyle} type="email" placeholder="Confirmation sent here" value={pax.email} onChange={e=>update(i,'email',e.target.value)}/></div>
             <div><label style={labelStyle}>Mobile *</label><input style={inputStyle} type="tel" placeholder="+63 XXX XXX XXXX" value={pax.phone} onChange={e=>update(i,'phone',e.target.value)}/></div>
           </div>
@@ -332,7 +337,7 @@ function StepPassengers({ passengers, setPassengers, onNext, onBack }: any) {
 
 // ─── STEP REVIEW ────────────────────────────────────────────────
 
-function StepReview({ passengers, baggage, assistance, outbound, returnFlight, onBack, onConfirm }: any) {
+function StepReview({ passengers, baggage, assistance, outbound, returnFlight, onBack, onConfirm, isMobile }: any) {
   const baggageOpt = BAGGAGE_OPTIONS.find(b=>b.id===baggage);
   const assistanceOpt = SPECIAL_ASSISTANCE.find(a=>a.id===assistance);
   const flights = returnFlight ? [outbound, returnFlight] : [outbound];
@@ -355,7 +360,7 @@ function StepReview({ passengers, baggage, assistance, outbound, returnFlight, o
             <p style={{ fontFamily:'Syne', fontSize:11, color:'var(--lagoon-muted)', margin:'0 0 6px' }}>
               {i===0 ? 'Outbound' : 'Return'} · {f.departDate ? formatDate(f.departDate) : ''}
             </p>
-            <div style={{ display:'flex', alignItems:'center', gap:10 }}>
+            <div style={{ display:'flex', alignItems:'center', gap:10, flexWrap:'wrap' }}>
               <span style={{ fontFamily:'Syne', fontWeight:800, fontSize:18, color:'var(--nightsurf)' }}>{f.depart}</span>
               <span style={{ fontFamily:'Syne', fontWeight:600, fontSize:12, color:'var(--lagoon)' }}>{f.from}</span>
               <PlaneLanding size={14} color="var(--lagoon-muted)"/>
@@ -372,9 +377,9 @@ function StepReview({ passengers, baggage, assistance, outbound, returnFlight, o
       {passengers.map((p:any, i:number) => (
         <div key={i} style={{ background:'white', border:'1px solid var(--border)', borderRadius:12, padding:20, marginBottom:14 }}>
           <p style={{ fontFamily:'Syne', fontWeight:800, fontSize:12, color:'var(--lagoon-muted)', textTransform:'uppercase', letterSpacing:1, marginBottom:12 }}>Passenger {i+1}</p>
-          <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:12 }}>
+          <div style={{ display:'grid', gridTemplateColumns: isMobile ? 'repeat(2,1fr)' : 'repeat(3,1fr)', gap:12 }}>
             {[['Name',`${p.firstName} ${p.lastName}`],['Gender',p.gender],['DOB',p.dob],['Nationality',p.nationality],['Email',p.email],['Phone',p.phone]].map(([l,v])=>(
-              <div key={l}><p style={{ fontFamily:'Syne', fontSize:10, color:'var(--lagoon-muted)', margin:'0 0 2px', textTransform:'uppercase', letterSpacing:0.5 }}>{l}</p><p style={{ fontFamily:'Syne', fontWeight:600, fontSize:13, color:'var(--nightsurf)', margin:0 }}>{v}</p></div>
+              <div key={l}><p style={{ fontFamily:'Syne', fontSize:10, color:'var(--lagoon-muted)', margin:'0 0 2px', textTransform:'uppercase', letterSpacing:0.5 }}>{l}</p><p style={{ fontFamily:'Syne', fontWeight:600, fontSize:13, color:'var(--nightsurf)', margin:0, wordBreak:'break-all' }}>{v}</p></div>
             ))}
           </div>
         </div>
@@ -468,7 +473,6 @@ function BookingContent() {
   const returnDate = params.get('returnDate') || params.get('return') || '';
 
   const isRoundTrip = !!returnDate;
-
   const outbound = { from, to, depart, arrive, duration, price: parseInt(price), departDate };
 
   const [step, setStep]             = useState(isRoundTrip ? 1 : 2);
@@ -479,17 +483,18 @@ function BookingContent() {
     { firstName:'', lastName:'', gender:'', dob:'', nationality:'', email:'', phone:'' }
   ]);
 
+  const width = useWindowSize();
+  const isMobile = width > 0 && width < 768;
+
   const baggagePrice = BAGGAGE_OPTIONS.find(b=>b.id===baggage)?.price || 0;
   const flights = returnFlight ? [outbound, returnFlight] : [outbound];
   const total = (flights.reduce((s:number,f:any)=>s+f.price,0) + baggagePrice*(returnFlight?2:1)) * passengers.length;
 
-  // Steps : RT = 1(return select) 2(addons) 3(pax) 4(review) 5(confirm)
-  //         OW = 2(addons) 3(pax) 4(review) 5(confirm)
-  const stepLabel = isRoundTrip ? step : step - 1; // normalize for StepIndicator
+  const stepLabel = isRoundTrip ? step : step - 1;
 
   if (step === 5) {
     return (
-      <div style={{ background:'var(--seafoam)', minHeight:'100vh', padding:'48px 40px' }}>
+      <div style={{ background:'var(--seafoam)', minHeight:'100vh', padding: isMobile ? '28px 16px' : '48px 40px' }}>
         <div style={{ maxWidth:680, margin:'0 auto' }}>
           <StepConfirmation passengers={passengers} outbound={outbound} returnFlight={returnFlight} baggage={baggage} total={total}/>
         </div>
@@ -499,26 +504,24 @@ function BookingContent() {
 
   return (
     <div>
-      <div style={{ background:'var(--nightsurf)', padding:'32px 40px 40px' }}>
+      <div style={{ background:'var(--nightsurf)', padding: isMobile ? '24px 20px 32px' : '32px 40px 40px' }}>
         <div style={{ maxWidth:680, margin:'0 auto' }}>
-          <Link href="/flights" style={{ fontFamily:'Syne', fontSize:12, color:'rgba(255,255,255,0.4)', textDecoration:'none', display:'inline-block', marginBottom:16 }}>
+          <Link href="/flights" style={{ fontFamily:'Syne', fontSize:12, color:'rgba(255,255,255,0.4)', textDecoration:'none', display:'inline-block', marginBottom:12 }}>
             ← Back to flights
           </Link>
-          <h1 style={{ fontFamily:'Syne', fontWeight:800, fontSize:32, color:'white', marginBottom:4 }}>
+          <h1 style={{ fontFamily:'Syne', fontWeight:800, fontSize: isMobile ? 24 : 32, color:'white', marginBottom:4 }}>
             {isRoundTrip ? 'Round trip booking' : 'One way booking'}
           </h1>
           <p style={{ fontFamily:'Syne', fontWeight:400, fontSize:14, color:'rgba(255,255,255,0.5)' }}>
-            ✈ Sunlight Air · {from} ↔ {to} · Direct
-            {isRoundTrip && ' · Round trip'}
+            ✈ Sunlight Air · {from} ↔ {to} · Direct{isRoundTrip && ' · Round trip'}
           </p>
         </div>
       </div>
 
-      <div style={{ background:'var(--seafoam)', padding:'40px 40px 56px', minHeight:'60vh' }}>
+      <div style={{ background:'var(--seafoam)', padding: isMobile ? '24px 16px 40px' : '40px 40px 56px', minHeight:'60vh' }}>
         <div style={{ maxWidth:680, margin:'0 auto' }}>
-          <StepIndicator current={stepLabel} isRoundTrip={isRoundTrip}/>
+          <StepIndicator current={stepLabel} isRoundTrip={isRoundTrip} isMobile={isMobile}/>
 
-          {/* Show selected flights summary (steps 2+) */}
           {step >= 2 && (
             <div style={{ marginBottom:20 }}>
               <MiniFlightCard label="✈ Outbound" from={outbound.from} to={outbound.to} depart={outbound.depart} arrive={outbound.arrive} duration={outbound.duration} price={outbound.price} date={outbound.departDate}/>
@@ -534,8 +537,8 @@ function BookingContent() {
             />
           )}
           {step === 2 && <StepAddOns baggage={baggage} setBaggage={setBaggage} assistance={assistance} setAssistance={setAssistance} isRoundTrip={isRoundTrip} onNext={()=>setStep(3)} onBack={()=>setStep(isRoundTrip?1:2)}/>}
-          {step === 3 && <StepPassengers passengers={passengers} setPassengers={setPassengers} onNext={()=>setStep(4)} onBack={()=>setStep(2)}/>}
-          {step === 4 && <StepReview passengers={passengers} baggage={baggage} assistance={assistance} outbound={outbound} returnFlight={returnFlight} onBack={()=>setStep(3)} onConfirm={()=>setStep(5)}/>}
+          {step === 3 && <StepPassengers passengers={passengers} setPassengers={setPassengers} onNext={()=>setStep(4)} onBack={()=>setStep(2)} isMobile={isMobile}/>}
+          {step === 4 && <StepReview passengers={passengers} baggage={baggage} assistance={assistance} outbound={outbound} returnFlight={returnFlight} onBack={()=>setStep(3)} onConfirm={()=>setStep(5)} isMobile={isMobile}/>}
         </div>
       </div>
     </div>
