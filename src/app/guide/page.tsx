@@ -188,14 +188,19 @@ declare global {
 
 function SiargaoMap({ filter }: { filter: number | 'all' }) {
   useEffect(() => {
+    const timer = setTimeout(() => {
     const initMap = () => {
       if (!window.google) return;
+      const mapEl = document.getElementById('siargao-map');
+      if (!mapEl) return;
+
+      mapEl.style.height = window.innerWidth < 768 ? '320px' : '480px';
 
       const map = new window.google.maps.Map(
-        document.getElementById('siargao-map'),
+        mapEl,
         {
           center: { lat: 9.7870, lng: 126.1550 },
-          zoom: 13,
+          zoom: window.innerWidth < 768 ? 12 : 13,
           styles: [
             { featureType: 'poi', stylers: [{ visibility: 'off' }] },
             { featureType: 'transit', stylers: [{ visibility: 'off' }] },
@@ -269,11 +274,23 @@ function SiargaoMap({ filter }: { filter: number | 'all' }) {
     } else {
       window.initMap = initMap;
     }
+    }, 300);
+
+    return () => clearTimeout(timer);
   }, [filter]);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-      <div id="siargao-map" style={{ width: '100%', height: 480, borderRadius: 12, border: '1px solid var(--border)' }} />
+      <div
+        id="siargao-map"
+        style={{
+          width: '100%',
+          height: typeof window !== 'undefined' && window.innerWidth < 768 ? 320 : 480,
+          borderRadius: 12,
+          border: '1px solid var(--border)',
+          minHeight: 320,
+        }}
+      />
       <div style={{ display: 'flex', gap: 20, flexWrap: 'wrap', padding: '8px 4px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
           <span style={{ fontSize: 18 }}>📍</span>
